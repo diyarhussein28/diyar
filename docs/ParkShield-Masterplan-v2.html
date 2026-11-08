@@ -1,0 +1,1920 @@
+<title>ParkShield Masterplan v2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap">
+<style>
+/* Layout: document column + sticky table of contents (right side, RTL). Accent = German parking-sign blue, warning = road-works yellow. */
+:root {
+  --bg: #f6f8fb;
+  --paper: #ffffff;
+  --ink: #16202e;
+  --muted: #5a6779;
+  --line: #d9e0ea;
+  --soft: #eef2f8;
+  --accent: #1c5aa6;           /* Verkehrszeichen 314 "Parken" blue */
+  --accent-ink: #ffffff;
+  --accent-soft: #e3ecf8;
+  --warn: #f2b600;             /* RAL 1003 signal yellow */
+  --warn-soft: #fff6d6;
+  --ok: #1f7a4d;
+  --ok-soft: #e2f3ea;
+  --bad: #b3261e;
+  --bad-soft: #fbe7e5;
+  --code-bg: #0f1724;
+  --code-ink: #dbe6f5;
+  --display: "Readex Pro", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d131c; --paper: #131b27; --ink: #e6ecf4; --muted: #9aa8bb; --line: #263345; --soft: #18222f;
+    --accent: #6ea3e8; --accent-ink: #0d131c; --accent-soft: #1a2a40; --warn: #f5c533; --warn-soft: #2f2711;
+    --ok: #5cc28f; --ok-soft: #12291e; --bad: #f08a80; --bad-soft: #321716; --code-bg: #0a0f17; --code-ink: #d4deec;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d131c; --paper: #131b27; --ink: #e6ecf4; --muted: #9aa8bb; --line: #263345; --soft: #18222f;
+  --accent: #6ea3e8; --accent-ink: #0d131c; --accent-soft: #1a2a40; --warn: #f5c533; --warn-soft: #2f2711;
+  --ok: #5cc28f; --ok-soft: #12291e; --bad: #f08a80; --bad-soft: #321716; --code-bg: #0a0f17; --code-ink: #d4deec;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.8; }
+.page { direction: rtl; max-width: 1240px; margin: 0 auto; padding-block: 32px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 40px; }
+@media (max-width: 960px) { .page { grid-template-columns: minmax(0, 1fr); } .toc { position: static !important; max-height: none !important; } }
+
+/* TOC */
+.toc { position: sticky; top: calc(16px + env(safe-area-inset-top, 0px)); align-self: start; max-height: calc(100vh - 32px); overflow: auto;
+  border-inline-start: 2px solid var(--line); padding-inline-start: 16px; font-size: 14px; }
+.toc b { display: block; font-family: var(--display); font-size: 13px; letter-spacing: .04em; color: var(--muted); margin-bottom: 8px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: t; }
+.toc li { counter-increment: t; }
+.toc a { color: var(--ink); text-decoration: none; display: flex; gap: 8px; padding: 3px 0; line-height: 1.5; }
+.toc a::before { content: counter(t); font-family: var(--mono); font-size: 12px; color: var(--accent); min-width: 20px; padding-top: 2px; }
+.toc a:hover, .toc a:focus-visible { color: var(--accent); outline: none; }
+
+main { min-width: 0; }
+/* Cover */
+.cover { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 32px; display: grid; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.psign { width: 54px; height: 54px; background: var(--accent); color: var(--accent-ink); border-radius: 6px; display: grid; place-items: center;
+  font: 700 34px/1 var(--display); box-shadow: inset 0 0 0 3px var(--paper), 0 0 0 1px var(--accent); flex: none; }
+.cover h1 { font-family: var(--display); font-size: clamp(28px, 4.4vw, 44px); line-height: 1.25; margin: 0; text-wrap: balance; }
+.cover .sub { color: var(--muted); font-size: 18px; margin: 0; max-width: 62ch; }
+.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 0; }
+.meta div { border-top: 2px solid var(--accent); padding-top: 8px; }
+.meta dt { font-size: 12px; color: var(--muted); letter-spacing: .03em; }
+.meta dd { margin: 0; font-weight: 600; }
+
+/* Sections */
+section { margin-top: 56px; scroll-margin-top: 16px; }
+h2 { font-family: var(--display); font-size: clamp(22px, 3vw, 30px); line-height: 1.35; margin: 0 0 8px; display: flex; gap: 12px; align-items: baseline; text-wrap: balance; }
+h2 .n { font-family: var(--mono); font-size: 15px; color: var(--accent-ink); background: var(--accent); border-radius: 4px; padding: 2px 8px; flex: none; transform: translateY(-3px); }
+h3 { font-family: var(--display); font-size: 19px; margin: 32px 0 8px; }
+h4 { font-size: 16px; margin: 20px 0 6px; }
+p { margin: 0 0 12px; max-width: 75ch; }
+.lead { font-size: 17px; color: var(--muted); max-width: 70ch; }
+ul, ol { margin: 0 0 12px; padding-inline-start: 22px; }
+li { margin-bottom: 4px; }
+strong { font-weight: 600; }
+code, .mono { font-family: var(--mono); font-size: .88em; direction: ltr; unicode-bidi: isolate; }
+:not(pre) > code { background: var(--soft); border: 1px solid var(--line); border-radius: 3px; padding: 0 5px; }
+.ltr { direction: ltr; unicode-bidi: isolate; }
+a { color: var(--accent); }
+
+/* Tables */
+.tbl { overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: start; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: var(--soft); font-weight: 600; font-size: 13px; color: var(--muted); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: end; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tfoot td { font-weight: 700; background: var(--accent-soft); }
+
+/* Callouts & chips */
+.note { background: var(--paper); border: 1px solid var(--line); border-inline-start: 4px solid var(--accent); border-radius: 4px; padding: 14px 16px; margin: 16px 0; }
+.note.warn { border-inline-start-color: var(--warn); background: var(--warn-soft); }
+.note.ok { border-inline-start-color: var(--ok); background: var(--ok-soft); }
+.note > :last-child { margin-bottom: 0; }
+.chip { display: inline-block; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 10px; white-space: nowrap; }
+.must { background: var(--bad-soft); color: var(--bad); }
+.should { background: var(--warn-soft); color: var(--ink); border: 1px solid var(--warn); }
+.could { background: var(--soft); color: var(--muted); }
+.c-ok { background: var(--ok-soft); color: var(--ok); }
+.c-bad { background: var(--bad-soft); color: var(--bad); }
+
+/* Grids */
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 16px 0; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; min-width: 0; }
+.card h4 { margin-top: 0; }
+.card > :last-child { margin-bottom: 0; }
+
+/* Plans */
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 20px 0; }
+.plan { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: grid; gap: 10px; align-content: start; }
+.plan.featured { border: 2px solid var(--accent); }
+.plan .pname { font-family: var(--display); font-size: 22px; margin: 0; }
+.plan .price { font-family: var(--display); font-size: 30px; line-height: 1.2; margin: 0; }
+.plan .price small { font-size: 14px; color: var(--muted); font-family: var(--body); }
+.plan .alt { color: var(--muted); font-size: 14px; margin: 0; }
+.plan ul { padding-inline-start: 18px; font-size: 14.5px; margin: 0; }
+.plan .who { font-size: 14px; background: var(--soft); border-radius: 4px; padding: 8px 10px; margin: 0; }
+
+/* Code */
+pre { direction: ltr; text-align: left; background: var(--code-bg); color: var(--code-ink); border-radius: 6px; padding: 16px; overflow-x: auto;
+  font: 13px/1.6 var(--mono); margin: 12px 0 20px; }
+pre.mermaid { background: var(--paper); color: var(--ink); border: 1px solid var(--line); text-align: center; }
+
+/* Gantt */
+.gantt { overflow-x: auto; margin: 16px 0 24px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); }
+.g-inner { min-width: 820px; display: grid; grid-template-columns: 210px repeat(18, 1fr); font-size: 13px; }
+.g-head { background: var(--soft); color: var(--muted); font-family: var(--mono); font-size: 11px; text-align: center; padding: 6px 0; border-bottom: 1px solid var(--line); border-inline-start: 1px solid var(--line); }
+.g-head.y { font-family: var(--display); font-size: 12px; }
+.g-label { padding: 7px 10px; border-bottom: 1px solid var(--line); font-weight: 500; line-height: 1.4; }
+.g-label small { display: block; color: var(--muted); font-weight: 400; }
+.g-row { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(18, 1fr); border-bottom: 1px solid var(--line); position: relative; align-items: center; padding: 6px 0; }
+.g-bar { height: 22px; border-radius: 4px; background: var(--accent); color: var(--accent-ink); font-size: 11px; display: flex; align-items: center; padding: 0 8px; white-space: nowrap; overflow: hidden; }
+.g-bar.p0 { background: var(--muted); color: var(--paper); }
+.g-bar.beta { background: var(--warn); color: #16202e; }
+.g-bar.p2 { background: #2f7d6d; color: #fff; }
+.g-bar.p3 { background: #6b4fa8; color: #fff; }
+.g-bar.p4 { background: #9a5b25; color: #fff; }
+.g-bar.ms { background: var(--bad); color: #fff; height: 22px; }
+
+.foot { margin-top: 64px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+@media print {
+  body { background: #fff; font-size: 11.5pt; }
+  .page { display: block; padding: 0; max-width: none; }
+  .toc { display: none; }
+  section { break-inside: auto; }
+  h2, h3 { break-after: avoid; }
+  .tbl, .card, .plan, pre, .note { break-inside: avoid; }
+  .gantt { overflow: visible; }
+  .g-inner { min-width: 0; }
+}
+</style>
+
+<div class="page" dir="rtl" lang="ar">
+<nav class="toc" aria-label="المحتويات">
+  <b>المحتويات</b>
+  <ol>
+    <li><a href="#summary">الملخص التنفيذي</a></li>
+    <li><a href="#review">نتائج مراجعة النسخة الأولى وحلولها</a></li>
+    <li><a href="#product">المنتج والمستخدمون</a></li>
+    <li><a href="#functional">المتطلبات الوظيفية</a></li>
+    <li><a href="#nfr">المتطلبات غير الوظيفية</a></li>
+    <li><a href="#legal">الإطار القانوني والامتثال</a></li>
+    <li><a href="#architecture">المعمارية التقنية</a></li>
+    <li><a href="#data">نموذج البيانات (ERD)</a></li>
+    <li><a href="#security">الأمن ومكافحة الإساءة</a></li>
+    <li><a href="#stories">User Stories للـ MVP</a></li>
+    <li><a href="#pricing">الباقات والأسعار</a></li>
+    <li><a href="#costs">تقدير التكلفة</a></li>
+    <li><a href="#execution">خطة التنفيذ العملية</a></li>
+    <li><a href="#roadmap">خارطة الطريق</a></li>
+    <li><a href="#kpis">مؤشرات الأداء</a></li>
+    <li><a href="#risks">سجل المخاطر</a></li>
+    <li><a href="#appendix">الملاحق</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="cover">
+  <div class="brand"><div class="psign" aria-hidden="true">P</div><div><strong>ParkShield™</strong><br><span style="color:var(--muted)">Smart privacy-preserving vehicle communication</span></div></div>
+  <h1>الخطة الشاملة للمشروع: النظرية والتنفيذ العملي</h1>
+  <p class="sub">النسخة الثانية المعدّلة من مواصفات ParkShield. تجمع تحليل النسخة الأولى وحل كل مشكلة فيها، والمواصفات الكاملة، ونموذج البيانات، وقصص المستخدم، والأسعار، والتكاليف، وخطة تنفيذ قابلة للتطبيق خطوة بخطوة.</p>
+  <dl class="meta">
+    <div><dt>المرجع</dt><dd class="mono">SRS-PARK-DE-2026-V2</dd></div>
+    <div><dt>السوق</dt><dd>ألمانيا ثم الاتحاد الأوروبي</dd></div>
+    <div><dt>التاريخ</dt><dd>نوفمبر 2026</dd></div>
+    <div><dt>النموذج التجاري</dt><dd>اشتراكات مدفوعة فقط</dd></div>
+  </dl>
+</header>
+
+<section id="summary">
+  <h2><span class="n">1</span>الملخص التنفيذي</h2>
+  <p class="lead">ParkShield يستبدل رقم الهاتف المكتوب خلف زجاج السيارة بملصق QR. أي شخص (مشاة أو سائق) يمسح الملصق يرسل تنبيهًا لصاحب السيارة خلال ثوانٍ: السيارة تسد مخرجًا، أو النور مضاء، أو النافذة مفتوحة، أو هناك ضرر. لا يحتاج الماسح لتطبيق أو حساب، ولا يرى أي طرف رقم الآخر.</p>
+
+  <div class="grid2">
+    <div class="card"><h4>المشكلة</h4><p>في ألمانيا يترك كثير من السائقين رقم هاتفهم خلف الزجاج لحالات الركن الخاطئ. هذا يعرّضهم للإزعاج وجمع الأرقام لأغراض تسويقية واحتيالية، ويتعارض مع ثقافة الخصوصية القوية هناك. في المقابل، من تُسدّ سيارته لا يجد طريقة للتواصل غير استدعاء الشرطة أو شركة السحب، وهذا مكلف ومزعج للطرفين.</p></div>
+    <div class="card"><h4>الحل</h4><p>ملصق QR شخصي ومشفّر يفتح صفحة ويب سريعة (PWA) بلغة الماسح. يختار الماسح نوع المشكلة بضغطة واحدة، فيصل التنبيه للمالك عبر Push أو WhatsApp أو SMS أو بريد، مع زر <strong>„Ich komme“</strong> (أنا قادم). إذا لم يرد المالك خلال مدة محددة، يُصعَّد التنبيه تلقائيًا لجهة اتصال احتياطية وافقت مسبقًا.</p></div>
+  </div>
+
+  <h3>القرارات الأساسية في هذه النسخة</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>القرار</th><th>التفاصيل</th></tr></thead>
+    <tbody>
+      <tr><td>لا شيء مجاني</td><td>لا باقة مجانية ولا فترة تجربة. ثلاث باقات مدفوعة: <strong>Plus</strong> (‏29 €/سنة)، <strong>Premium</strong> (‏59 €/سنة)، <strong>Business</strong> (‏39 € لكل سيارة/سنة + الضريبة). الملصق الأول مشمول في كل باقة.</td></tr>
+      <tr><td>الإطلاق على مراحل</td><td>يبدأ الإطلاق بباقة Plus فقط (يوليو 2027). تأتي Premium في المرحلة 2 وBusiness في المرحلة 3. هكذا يدخل المال بسرعة ويبقى نطاق الـ MVP قابلًا للتنفيذ.</td></tr>
+      <tr><td>الميزة التنافسية</td><td>نظام <strong>التأكيد والتصعيد</strong> (Acknowledge &amp; Escalation) مع إظهار حالة التنبيه للماسح لحظيًا. هذه نقطة التميّز التي يُبنى عليها التسويق.</td></tr>
+      <tr><td>الخصوصية مصممة من البداية</td><td>لا بصمة أجهزة من جهة المتصفح. يُستخدم مرجع مستعار يتغير يوميًا. التشفير على مستوى الحقول، وموافقة صريحة من جهة الاتصال الاحتياطية، وجدول احتفاظ بالبيانات محدد لكل نوع منها.</td></tr>
+      <tr><td>بنية تحتية ألمانية</td><td>Hetzner Cloud (نورنبيرغ/فالكنشتاين)، ومزودون أوروبيون حيث أمكن (Brevo، seven.io، Friendly Captcha، Mistral).</td></tr>
+      <tr><td>الميزانية</td><td>تكلفة MVP بين <strong>80 ألف €</strong> (فريق Nearshore) و<strong>169 ألف €</strong> (وكالة ألمانية)، تُضاف لها حوالي 28 ألف € تكاليف تأسيس وقانون وأمن، و15 ألف € تسويق للإطلاق. الاستثمار الكلي حتى الإطلاق بين 129 و218 ألف €. نقطة التعادل عند نحو 6,500 مشترك Plus أو ما يعادلهم.</td></tr>
+      <tr><td>الجدول الزمني</td><td>التأسيس: ديسمبر 2026 إلى يناير 2027. بناء الـ MVP: فبراير إلى مايو 2027. Beta مدفوعة: يونيو 2027. الإطلاق: يوليو 2027. Premium: أكتوبر 2027. Business: فبراير 2028. التوسع الأوروبي: من مارس 2028.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="review">
+  <h2><span class="n">2</span>نتائج مراجعة النسخة الأولى وحلولها</h2>
+  <p class="lead">هذه كل المشاكل التي ظهرت في مراجعة الوثيقة الأصلية (SRS-PARK-DE-2026-V1)، وبجانب كل مشكلة الحل المعتمد في هذه النسخة. الأقسام التالية مكتوبة على أساس هذه الحلول.</p>
+
+  <h3>نقاط القوة التي نحافظ عليها</h3>
+  <ul>
+    <li>ماسح بلا تسجيل ولا تطبيق. هذا شرط نجاح أي منتج من هذا النوع.</li>
+    <li>آلية التأكيد والتصعيد (القسم 4.1 في الوثيقة الأصلية) أقوى فكرة فيها.</li>
+    <li>استضافة داخل ألمانيا ودعم ثنائي اللغة (ألماني/إنجليزي) واختيار تقنيات حديثة ومناسبة.</li>
+    <li>ملصقات قابلة للتخصيص، وهي أيضًا مصدر دخل إضافي ووسيلة تسويق في الشارع.</li>
+  </ul>
+
+  <h3>المشاكل والحلول</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>المشكلة في V1</th><th>الخطورة</th><th>الحل في V2</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>تقول الوثيقة "لا تسجيل لبيانات الماسح"، لكنها تستخدم <em>device fingerprint</em> وIP. البصمة تُعتبر بيانات شخصية، وقراءتها من الجهاز تحتاج موافقة حسب <span class="ltr">§25 TDDDG</span>.</td><td><span class="chip must">حرجة</span></td><td>لا يُشغَّل أي سكربت بصمة. نحسب مرجعًا مستعارًا على الخادم: <code>HMAC(salt يومي, IP مقطوع /24 + User-Agent + token)</code>. الـ salt يُشتق يوميًا ولا يُخزَّن، فلا يمكن ربط يوم بآخر. يُحذف المرجع بعد 24 ساعة. الأساس القانوني: المصلحة المشروعة (Art. 6(1)(f)) للحماية من الإساءة.</td></tr>
+      <tr><td class="num">2</td><td>تُخزَّن بيانات جهة الاتصال الاحتياطية دون علمها أو موافقتها.</td><td><span class="chip must">حرجة</span></td><td>نرسل لها دعوة فيها رابط تأكيد. لا تُستخدم قبل الموافقة، وتُحذف تلقائيًا إذا لم ترد خلال 14 يومًا، وتستطيع الانسحاب في أي وقت.</td></tr>
+      <tr><td class="num">3</td><td>OpenAI API ينقل البيانات خارج الاتحاد الأوروبي، وهذا يناقض شعار "صفر نقل عابر للحدود".</td><td><span class="chip must">حرجة</span></td><td>Mistral (فرنسا) أو Azure OpenAI بمنطقة EU Data Zone، مع عقد معالجة (AVV). المساعد الذكي لا يرى بيانات التنبيهات أبدًا.</td></tr>
+      <tr><td class="num">4</td><td>"Automated Towing Relay": إرسال بيانات لشركة سحب تلقائيًا بلا أساس قانوني، وفيه مخاطر مسؤولية.</td><td><span class="chip must">حرجة</span></td><td>أُلغيت الميزة. بدلًا منها: صفحة إرشاد للماسح بالخطوات القانونية (التواصل مع Ordnungsamt)، ونوع تنبيه "Abschleppen droht" يصل للمالك كتنبيه عاجل.</td></tr>
+      <tr><td class="num">5</td><td>رقم اللوحة غير مشفّر، رغم أنه بيانات شخصية.</td><td><span class="chip must">عالية</span></td><td>تشفير AES-256-GCM على مستوى الحقل، مع Blind Index (HMAC) للبحث.</td></tr>
+      <tr><td class="num">6</td><td>"كل الجداول مشفّرة AES-256-GCM": عبارة غير دقيقة تقنيًا.</td><td><span class="chip should">متوسطة</span></td><td>طبقتان: تشفير القرص (LUKS) لكل شيء، وتشفير على مستوى التطبيق للحقول الحساسة (هاتف، لوحة، رسائل، عنوان، موقع)، مع مفاتيح لها أرقام إصدارات تسمح بتدويرها.</td></tr>
+      <tr><td class="num">7</td><td>سجلات التنبيهات بلا مدة احتفاظ محددة. "الحذف خلال 24 ساعة" لا يشمل النسخ الاحتياطية.</td><td><span class="chip must">عالية</span></td><td>جدول احتفاظ مفصّل لكل نوع بيانات (القسم 6.5). تُحذف النسخ الاحتياطية تلقائيًا بعد 35 يومًا، وهذا موثّق في سياسة الخصوصية.</td></tr>
+      <tr><td class="num">8</td><td>تحديد المعدل (1 تنبيه/15 دقيقة/جهاز) يُتجاوز بسهولة: صورة واحدة للـ QR تكفي لإغراق المالك من أجهزة متعددة.</td><td><span class="chip must">عالية</span></td><td>ثلاث طبقات: لكل ماسح ولكل سيارة (1 كل 15 دقيقة)، ولكل ماسح على كل السيارات (6 في الساعة)، ولكل سيارة من الجميع (20 في 24 ساعة). يضاف لها Friendly Captcha، وزر "إبلاغ عن إساءة" للمالك، وحظر مؤقت.</td></tr>
+      <tr><td class="num">9</td><td>Redis هو نقطة الفشل الوحيدة لمهام التصعيد. سقوطه يعني ضياعها.</td><td><span class="chip must">عالية</span></td><td>قاعدة البيانات هي مصدر الحقيقة (عمود <code>escalate_at</code>). BullMQ يعمل مع AOF، وعامل "Sweeper" يفحص كل دقيقة ويعيد جدولة أي تصعيد فات موعده. تحديث الحالة ذرّي، فلا يحدث تصعيد مزدوج.</td></tr>
+      <tr><td class="num">10</td><td>Redis Enterprise مكلف وغير ضروري.</td><td><span class="chip could">منخفضة</span></td><td>Valkey 8 (نسخة مفتوحة من Redis) مستضاف ذاتيًا، مع AOF ونسخة متماثلة.</td></tr>
+      <tr><td class="num">11</td><td>نموذج البيانات ناقص: لا طلبات ولا دفع ولا جهات اتصال ولا موافقات ولا سجل تدقيق ولا جداول زمنية.</td><td><span class="chip must">عالية</span></td><td>نموذج كامل من 30 جدولًا (القسم 8 والملحق أ)، اختُبر على PostgreSQL 16.</td></tr>
+      <tr><td class="num">12</td><td>متطلبات WhatsApp غير واضحة: قوالب يوافق عليها Meta، والموافقة المسبقة (Opt-in)، والتكلفة لكل رسالة.</td><td><span class="chip should">متوسطة</span></td><td>قوالب Utility بالألمانية والإنجليزية مع زر "Ich komme"، وOpt-in صريح أثناء الإعداد، وحد شهري لكل باقة، وتتبع تكلفة كل رسالة.</td></tr>
+      <tr><td class="num">13</td><td>متطلبات قانونية ألمانية إلزامية غير مذكورة: Impressum، AGB، Widerrufsrecht، زر الإلغاء، إمكانية الوصول.</td><td><span class="chip must">حرجة</span></td><td>القسم 6 كاملًا: <span class="ltr">§5 DDG</span>، و<span class="ltr">§312k BGB</span> (Kündigungsbutton)، و<span class="ltr">§356 BGB</span>، و<span class="ltr">BFSG / WCAG 2.2 AA</span>، و<span class="ltr">§7 UWG</span>.</td></tr>
+      <tr><td class="num">14</td><td>النطاق ضخم جدًا لـ MVP: Parkuhr وChatbot وتذاكر وفيديوهات وFleet وGPS كلها معًا.</td><td><span class="chip must">عالية</span></td><td>المراحل مقسّمة في القسم 14. يحتوي الـ MVP على ما يلزم لبيع باقة Plus فقط.</td></tr>
+      <tr><td class="num">15</td><td>لا توجد متطلبات غير وظيفية بأرقام (SLA، RTO/RPO، حمل متوقع).</td><td><span class="chip should">متوسطة</span></td><td>القسم 5: أهداف قابلة للقياس.</td></tr>
+      <tr><td class="num">16</td><td>لا تذكر الوثيقة حالات الفشل: Push لا يصل، رقم خاطئ، المالك لا يرد، الماسح بلا إنترنت.</td><td><span class="chip should">متوسطة</span></td><td>سلسلة بدائل للقنوات، وتحقق من القنوات بـ OTP، وحالة "expired" واضحة للماسح، وتعامل مع الشبكة الضعيفة في المرائب.</td></tr>
+      <tr><td class="num">17</td><td>لا تكاليف ولا تسعير مفصّل ولا اقتصاديات وحدة ولا خطة دخول للسوق.</td><td><span class="chip must">عالية</span></td><td>الأقسام 11 و12 و14.</td></tr>
+      <tr><td class="num">18</td><td>القسم 9 (Roadmap) في الوثيقة الأصلية مقطوع وفارغ.</td><td><span class="chip should">متوسطة</span></td><td>خارطة طريق كاملة مع بوابات قرار (Go/No-Go) في القسم 14.</td></tr>
+      <tr><td class="num">19</td><td>العلامة ™ مستخدمة دون فحص تسجيل العلامة.</td><td><span class="chip should">متوسطة</span></td><td>بحث تشابه، ثم تسجيل لدى DPMA وEUIPO في الفئات 9 و38 و42 خلال المرحلة 0.</td></tr>
+      <tr><td class="num">20</td><td>مشكلة البداية الباردة (Cold Start): لا قيمة دون ملصقات على السيارات.</td><td><span class="chip should">متوسطة</span></td><td>المنتج مفيد من أول يوم للمالك نفسه، لأنه يحميه ولا يحتاج شبكة مستخدمين. التوزيع عبر شركاء: إدارات العقارات (Hausverwaltung)، ومدارس القيادة، والوكلاء، ونوادي السيارات.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="product">
+  <h2><span class="n">3</span>المنتج والمستخدمون</h2>
+
+  <h3>3.1 الأدوار</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>الدور</th><th>من هو</th><th>ماذا يريد</th><th>ماذا يرى</th></tr></thead>
+    <tbody>
+      <tr><td><strong>الماسح</strong> (Scanner)</td><td>أي شخص في الشارع: جار سيارته مسدودة، مارّ لاحظ نورًا مضاء</td><td>إبلاغ المالك بسرعة دون كشف هويته ودون تثبيت شيء</td><td>اسم وصفي للسيارة اختاره المالك فقط (مثل "VW Golf أزرق") وحالة التنبيه. لا يرى اسمًا ولا رقمًا ولا لوحة.</td></tr>
+      <tr><td><strong>المالك</strong> (Owner)</td><td>المشترك الذي يدفع</td><td>أن يُبلَّغ فورًا ويحمي رقمه</td><td>لوحة التحكم: سياراته، ملصقاته، قنواته، سجل التنبيهات (90 يومًا)</td></tr>
+      <tr><td><strong>جهة الاتصال الاحتياطية</strong></td><td>شريك أو قريب أو زميل</td><td>أن يُبلَّغ فقط إذا لم يرد المالك</td><td>نوع الحادثة واسم السيارة الوصفي فقط</td></tr>
+      <tr><td><strong>مدير الأسطول</strong> (Business)</td><td>شركة لديها 5 سيارات أو أكثر</td><td>توجيه التنبيه للسائق المسؤول، وتقارير</td><td>لوحة الأسطول (المرحلة 3)</td></tr>
+      <tr><td><strong>الدعم والإدارة</strong></td><td>فريق ParkShield</td><td>إدارة الطلبات والإساءة وطلبات GDPR</td><td>لوحة الإدارة مع صلاحيات حسب الدور (RBAC) وسجل تدقيق</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>3.2 الشخصيات (Personas)</h3>
+  <div class="grid2">
+    <div class="card"><h4>Jonas، ‏34 سنة، كولونيا</h4><p>يسكن في شارع مزدحم ويركن غالبًا في الشارع. يترك رقمه خلف الزجاج وصار يتلقى رسائل احتيال. يريد حلًا بسيطًا ومحترمًا. مستعد يدفع 29 € في السنة، وهذا أقل من ثمن مخالفة واحدة.</p></div>
+    <div class="card"><h4>Aylin، ‏41 سنة، ميونخ</h4><p>أم لطفلين، ومدخل بيتها يُسد مرات كثيرة. تريد أن يصل التنبيه لزوجها إذا لم ترد هي، وأن تعرف أن السائق الآخر "قادم". هذه الشخصية المستهدفة لباقة Premium.</p></div>
+    <div class="card"><h4>Malermeister Schulz GmbH</h4><p>شركة دهانات لديها 12 فانًا تقف أمام مواقع العمل يوميًا. يريد المدير أن يصل التنبيه للسائق الحالي لا للمكتب. هذه الشخصية المستهدفة لباقة Business.</p></div>
+    <div class="card"><h4>الماسح: Frau Becker، ‏67 سنة</h4><p>لا تحب التطبيقات. تحتاج صفحة كبيرة الأزرار بالألمانية، تعمل في 3 ثوانٍ، وتطمئنها بأن الرسالة وصلت.</p></div>
+  </div>
+
+  <h3>3.3 رحلة المستخدم الأساسية</h3>
+  <ol>
+    <li>يشتري المالك باقة Plus من الموقع، ويسجّل سيارته، ويصمم الملصق، ويدفع. يُطبع الملصق ويُشحن خلال 3 إلى 5 أيام عمل، ويمكنه في الوقت نفسه تنزيل نسخة PDF مؤقتة للطباعة فورًا.</li>
+    <li>يفعّل قنوات الإشعار: Push على هاتفه، وWhatsApp بعد تأكيد OTP والموافقة، والبريد.</li>
+    <li>يلصق الملصق ويمسحه بنفسه مرة كاختبار، فيصل له تنبيه تجريبي.</li>
+    <li>بعد أسابيع، يمسح جار الملصق ويختار "Fahrzeug versperrt Ausfahrt".</li>
+    <li>يصل للمالك إشعار Push وWhatsApp معًا لأن التنبيه عاجل، فيضغط "Ich komme".</li>
+    <li>تتحول شاشة الماسح فورًا إلى: "Der Fahrer hat bestätigt und ist unterwegs".</li>
+    <li>لو لم يضغط المالك خلال 7 دقائق، يصل التنبيه لجهة الاتصال الاحتياطية، ويرى الماسح "Eskaliert an Notfallkontakt".</li>
+  </ol>
+</section>
+
+<section id="functional">
+  <h2><span class="n">4</span>المتطلبات الوظيفية</h2>
+  <p class="lead">كل متطلب له رقم معرّف وأولوية حسب منهج MoSCoW، والمرحلة التي يُنفذ فيها. الـ MVP يحتوي كل متطلبات <span class="chip must">Must</span> في المرحلة 1.</p>
+
+  <h3>4.1 تطبيق الماسح (PWA)، بلا تثبيت وبلا تسجيل</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المعرّف</th><th>المتطلب</th><th>الأولوية</th><th>المرحلة</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">SC-01</td><td>رابط الملصق بالشكل <code>https://pkshd.de/s/K7QX4M2R9T</code>، والرمز 10 محارف بترميز Crockford Base32 (50 بت عشوائية). لا تُخزَّن إلا قيمة SHA-256 الخاصة به.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SC-02</td><td>اكتشاف اللغة من <code>Accept-Language</code>: الألمانية افتراضيًا، مع زر DE/EN. صُممت الترجمة لتتوسع لاحقًا (TR، AR، PL، FR، NL).</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SC-03</td><td>سبعة أنواع تنبيه بأزرار كبيرة: ‏Ausfahrt versperrt، ‏Licht an، ‏Fenster offen، ‏Schaden، ‏Alarm، ‏Abschleppen droht، ‏Eigene Nachricht.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SC-04</td><td>رسالة حرة بحد أقصى 280 حرفًا، تمر بفلتر يمنع الشتائم والتهديد والروابط وأرقام الهواتف والبريد.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SC-05</td><td>Friendly Captcha غير مرئي (Proof-of-Work) قبل الإرسال، دون كوكيز.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SC-06</td><td>حالة لحظية للماسح: <em>Gesendet ← Zugestellt ← Bestätigt / Eskaliert / Abgelaufen</em>. تُحدَّث كل 3 ثوانٍ (أو عبر SSE)، ولمدة أقصاها ساعتان.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SC-07</td><td>صفحة "ملصق غير فعال" إذا انتهى الاشتراك أو أُلغي الرمز. لا تكشف أي معلومة، وتقترح التواصل مع Ordnungsamt.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SC-08</td><td>إرشادات قانونية عند "Abschleppen droht" أو الحالات الطارئة (‏110/112 في الخطر الحقيقي).</td><td><span class="chip should">Should</span></td><td>1</td></tr>
+      <tr><td class="mono">SC-09</td><td>دردشة مجهولة ثنائية الاتجاه بعد التنبيه (Premium/Business). الرسائل تمر بالفلتر وتُحذف بعد 7 أيام.</td><td><span class="chip should">Should</span></td><td>2</td></tr>
+      <tr><td class="mono">SC-10</td><td>زر "اتصال مقنّع" (Masked Call) في الحالات العاجلة (Premium). المكالمة تمر عبر رقم وسيط، ولا يرى أي طرف رقم الآخر.</td><td><span class="chip could">Could</span></td><td>2</td></tr>
+      <tr><td class="mono">SC-11</td><td>دعم NFC: نفس الرابط مكتوب على شريحة NTAG215 داخل الملصق.</td><td><span class="chip could">Could</span></td><td>2</td></tr>
+      <tr><td class="mono">SC-12</td><td>واجهة متوافقة مع WCAG 2.2 AA: تباين، وقارئ شاشة، وأزرار لا تقل عن 48px، وتحميل أقل من 1.5 ثانية على 4G.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>4.2 بوابة المالك</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المعرّف</th><th>المتطلب</th><th>الأولوية</th><th>المرحلة</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">OW-01</td><td>تسجيل دخول بلا كلمة مرور: Magic Link بالبريد (صالح 15 دقيقة)، مع Passkeys (WebAuthn) كخيار مفضّل.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-02</td><td>إدارة السيارات: الاسم الوصفي، واللوحة (مشفرة)، والطراز، واللون. عدد السيارات محدود حسب الباقة.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-03</td><td>مصمم الملصق: معاينة فورية، وعنوان CTA (من قائمة مقترحات أو نص حر مفلتر)، و6 قوالب، ونوعان: بطاقة A6 للوحة القيادة، أو ملصق فينيل مقاوم للأشعة فوق البنفسجية بحجم 8×8 سم.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-04</td><td>طلب ملصقات: الملصق الأول مشمول، والإضافي مدفوع، مع تتبع الشحنة وملف PDF مؤقت للطباعة المنزلية فور الدفع.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-05</td><td>قنوات الإشعار: Web Push (عدة أجهزة)، والبريد، وWhatsApp (بعد OTP وOpt-in). ترتيب الأولوية قابل للتعديل.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-06</td><td>ساعات الهدوء لكل يوم من الأسبوع، مع استثناء التنبيهات العاجلة (يمكن تعطيل الاستثناء).</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-07</td><td>جهة اتصال احتياطية واحدة في Plus وثلاث في Premium (تصعيد متعدد المستويات)، مع موافقة إلزامية من الجهة نفسها، ومهلة تصعيد من 3 إلى 30 دقيقة (الافتراضي 7).</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-08</td><td>سجل التنبيهات 90 يومًا، مع زر "إبلاغ عن إساءة" يحظر الماسح لهذه السيارة مدة 30 يومًا.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-09</td><td>اختبار الملصق: زر "أرسل تنبيهًا تجريبيًا" يمر بكل مسار الإرسال.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-10</td><td>إلغاء رمز وإصدار رمز جديد (عند تسرّب صورة الملصق أو بيع السيارة).</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-11</td><td>الفوترة: ترقية أو تخفيض الباقة، والفواتير بصيغة PDF، وتغيير وسيلة الدفع، وزر <strong>„Verträge hier kündigen“</strong> ظاهر دائمًا.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-12</td><td>الخصوصية: تنزيل كل البيانات (JSON + PDF)، وحذف الحساب نهائيًا (مهلة تراجع 24 ساعة)، وإدارة الموافقات.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">OW-13</td><td>بطاقة في Apple Wallet وGoogle Wallet تعرض رمز QR (للعرض المؤقت أو للسيارات المستأجرة).</td><td><span class="chip could">Could</span></td><td>2</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>4.3 محرك الإشعارات والتأكيد والتصعيد</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المعرّف</th><th>المتطلب</th><th>الأولوية</th><th>المرحلة</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">NT-01</td><td>القنوات مرتبة حسب الأولوية من الأرخص للأغلى: Push ثم البريد ثم WhatsApp ثم SMS. التنبيه العادي يتوقف عند أول قناة تنجح، والعاجل يُرسل على كل القنوات المفعّلة معًا.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">NT-02</td><td>كل إشعار يحمل رابط تأكيد يُستخدم مرة واحدة (256 بت، صالح ساعتين). في WhatsApp يظهر كزر Quick-Reply.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">NT-03</td><td>التصعيد للتنبيهات العاجلة ولنوع "نافذة مفتوحة"، وفقط إذا كانت هناك جهة اتصال احتياطية مؤكدة.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">NT-04</td><td>تتبع حالة كل رسالة (queued/sent/delivered/read/failed) وتكلفتها باليورو، عبر Webhooks المزوّدين.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">NT-05</td><td>حدود الاستخدام العادل (Fair Use) لكل باقة شهريًا. عند تجاوز الحد يعود الإرسال لقنوات Push والبريد المجانية، ويُبلَّغ المالك.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">NT-06</td><td>اشتراك Push يُحذف تلقائيًا بعد خطأ 410 أو 5 أخطاء متتالية، ويُبلَّغ المالك بالبريد ليعيد تفعيله.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">NT-07</td><td>SMS كبديل احتياطي (Premium/Business).</td><td><span class="chip should">Should</span></td><td>2</td></tr>
+      <tr><td class="mono">NT-08</td><td>توجيه التنبيه للسائق المناوب حسب جدول (Business).</td><td><span class="chip should">Should</span></td><td>3</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>4.4 مساعد الركن (Parkuhr)</h3>
+  <ul>
+    <li><strong>PA-01</strong> <span class="chip must">Must</span> مؤقت لعداد الركن أو Parkschein، مع تذكير قبل 10 و5 دقائق عبر Push أو WhatsApp.</li>
+    <li><strong>PA-02</strong> <span class="chip must">Must</span> حفظ موقع الركن بضغطة، مع رابط ملاحة للعودة. يُحذف الموقع بعد 24 ساعة من انتهاء الجلسة.</li>
+    <li><strong>PA-03</strong> <span class="chip should">Should</span> بطاقات شرح لقواعد Parkscheibe وAnwohnerparken وHalteverbot (محتوى ثابت تحرره الإدارة، بلا بيانات خرائط في البداية).</li>
+  </ul>
+
+  <h3>4.5 لوحة الإدارة والدعم</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المعرّف</th><th>المتطلب</th><th>الأولوية</th><th>المرحلة</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">AD-01</td><td>صلاحيات حسب الدور: support (قراءة محدودة، تذاكر)، وadmin، وsuperadmin. دخول إلزامي بـ Passkey مع MFA، ومن IP allowlist أو VPN.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">AD-02</td><td>المستخدمون والاشتراكات: بحث بالبريد أو آخر 4 محارف من الرمز. لا يظهر هاتف ولا لوحة بشكل كامل (Masking).</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">AD-03</td><td>إنتاج دفعات رموز للطباعة المسبقة (للشركاء)، وخط سير الطلبات: Generated ← Printed ← Shipped ← Activated.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">AD-04</td><td>مركز الإساءة: تقارير المالكين، والرسائل المحظورة، والحظر اليدوي المؤقت.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">AD-05</td><td>طلبات GDPR بموعد 30 يومًا وتنبيه قبل الموعد، مع تنفيذ الحذف أو التصدير بضغطة.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">AD-06</td><td>مؤشرات: تنبيهات في اليوم، ونسبة التسليم، ونسبة التأكيد، ومتوسط زمن التأكيد، وتكلفة الرسائل، وMRR، وChurn.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">AD-07</td><td>كل إجراء لموظف يُسجَّل في <code>audit_logs</code> ولا يمكن حذفه من الواجهة.</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SP-01</td><td>مركز مساعدة (FAQ) بالألمانية والإنجليزية، ونموذج تواصل يفتح تذكرة في Zammad (مستضاف ذاتيًا).</td><td><span class="chip must">Must</span></td><td>1</td></tr>
+      <tr><td class="mono">SP-02</td><td>مساعد ذكي (Mistral EU) يجيب من قاعدة المعرفة فقط، ويحوّل لموظف عند الحاجة، ولا يصل لبيانات المستخدم.</td><td><span class="chip should">Should</span></td><td>2</td></tr>
+      <tr><td class="mono">SP-03</td><td>دعم عبر WhatsApp (Premium/Business) مربوط بـ Zammad.</td><td><span class="chip should">Should</span></td><td>2</td></tr>
+      <tr><td class="mono">SP-04</td><td>فيديوهات إرشادية قصيرة (لصق الملصق، الاختبار، الإعداد).</td><td><span class="chip could">Could</span></td><td>2</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="nfr">
+  <h2><span class="n">5</span>المتطلبات غير الوظيفية</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>المجال</th><th>الهدف القابل للقياس</th><th>طريقة القياس</th></tr></thead>
+    <tbody>
+      <tr><td>سرعة صفحة الماسح</td><td>LCP أقل من 1.5 ثانية على 4G، وحجم JS المحمَّل أقل من 90 KB مضغوطًا</td><td>Lighthouse CI في كل Pull Request، وRUM من خلال Sentry</td></tr>
+      <tr><td>من المسح إلى الإشعار</td><td>p95 أقل من 5 ثوانٍ لـ Push، وأقل من 10 ثوانٍ لـ WhatsApp</td><td>الفرق بين <code>alerts.created_at</code> و<code>alert_deliveries.sent_at</code></td></tr>
+      <tr><td>نجاح التسليم</td><td>99% أو أكثر من التنبيهات تصل عبر قناة واحدة على الأقل</td><td>لوحة المؤشرات، مع تنبيه للفريق إذا نزلت عن 98%</td></tr>
+      <tr><td>دقة التصعيد</td><td>انحراف لا يزيد عن 60 ثانية عن الموعد، وصفر تصعيد مزدوج</td><td>اختبار حِمل وفوضى (Chaos): إيقاف Valkey أثناء التشغيل</td></tr>
+      <tr><td>التوفر</td><td>99.9% شهريًا لمسار الماسح (حوالي 43 دقيقة توقف في الشهر)، و99.5% للبوابة</td><td>Better Stack، مع صفحة حالة عامة</td></tr>
+      <tr><td>الاستعادة</td><td>RPO لا يزيد عن 5 دقائق (WAL archiving)، وRTO لا يزيد عن ساعة</td><td>تمرين استعادة شهري موثّق</td></tr>
+      <tr><td>السعة</td><td>200 تنبيه في الثانية كذروة، و10,000 مسح في الدقيقة (MVP)، مع توسع أفقي</td><td>k6 قبل الإطلاق وقبل كل مرحلة</td></tr>
+      <tr><td>الأمن</td><td>OWASP ASVS المستوى 2، وصفر ثغرات حرجة أو عالية مفتوحة عند الإطلاق</td><td>اختبار اختراق خارجي، وSAST وتدقيق الحزم في CI</td></tr>
+      <tr><td>إمكانية الوصول</td><td>WCAG 2.2 AA لكل الصفحات العامة وصفحة الماسح</td><td>axe-core في CI، ومراجعة يدوية بقارئ شاشة</td></tr>
+      <tr><td>اللغات</td><td>ألماني وإنجليزي عند الإطلاق، مع إمكانية إضافة لغة دون تعديل الكود</td><td>ملفات ترجمة ICU</td></tr>
+      <tr><td>المتصفحات</td><td>آخر نسختين من Safari iOS وChrome Android وSamsung Internet وFirefox</td><td>اختبارات Playwright على محاكيات الأجهزة</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="legal">
+  <h2><span class="n">6</span>الإطار القانوني والامتثال</h2>
+  <div class="note warn"><p>هذا القسم خطة عمل تقنية وتنظيمية، وليس استشارة قانونية. كل البنود تُراجع مع محامٍ ألماني متخصص في IT-Recht ومع مسؤول حماية البيانات خلال المرحلة 0، وقبل كتابة أي كود.</p></div>
+
+  <h3>6.1 القوانين المطبقة وما تتطلبه</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>القانون</th><th>ما يفرضه علينا</th><th>التنفيذ</th></tr></thead>
+    <tbody>
+      <tr><td class="ltr">DSGVO / GDPR</td><td>أساس قانوني لكل معالجة، وتقليل البيانات، وحقوق أصحاب البيانات، وعقود معالجة مع المزودين، وتقييم أثر (DPIA)، وسجل أنشطة المعالجة</td><td>جدول 6.4، وجدول الاحتفاظ 6.5، ووثيقة DPIA في المرحلة 0، وVVT (سجل المعالجة)</td></tr>
+      <tr><td class="ltr">BDSG</td><td>تعيين مسؤول حماية بيانات (DSB) إذا كان 20 شخصًا أو أكثر يعالجون البيانات بانتظام. تعيينه مبكرًا اختياريًا ينصح به لأن المنتج قائم على الخصوصية.</td><td>DSB خارجي بحوالي 250 € شهريًا</td></tr>
+      <tr><td class="ltr">TDDDG §25</td><td>قراءة أو تخزين أي شيء على جهاز المستخدم يحتاج موافقة، إلا ما هو "ضروري تقنيًا"</td><td>لا كوكيز تتبع، ولا بصمة أجهزة. الماسح يحصل على token في الذاكرة فقط. إحصاءات الموقع عبر Plausible أو Matomo بلا كوكيز.</td></tr>
+      <tr><td class="ltr">DDG §5</td><td>صفحة Impressum (بيانات مقدم الخدمة)</td><td>في تذييل كل صفحة، بما فيها صفحة الماسح</td></tr>
+      <tr><td class="ltr">BGB §312k</td><td>زر إلغاء الاشتراك للعقود المبرمة عبر الإنترنت: „Verträge hier kündigen“، مع صفحة تأكيد</td><td>متوفر دائمًا في البوابة وفي التذييل، حتى دون تسجيل دخول (بالبريد ورقم العقد)</td></tr>
+      <tr><td class="ltr">BGB §309 Nr. 9</td><td>العقود مع المستهلكين: بعد المدة الأولى يتجدد العقد لمدة غير محددة ويمكن إلغاؤه بإشعار شهر</td><td>الاشتراك السنوي يتجدد سنة. بعد السنة الأولى يحق للمستهلك الإلغاء في أي وقت بإشعار شهر، مع استرداد نسبي للمدة المتبقية.</td></tr>
+      <tr><td class="ltr">BGB §§355–357a</td><td>حق التراجع خلال 14 يومًا. إذا طلب العميل بدء الخدمة فورًا، يدفع مقابل الأيام التي استخدمها (Wertersatz).</td><td>خانة اختيار في صفحة الدفع: "أطلب البدء الفوري". عند التراجع يُسترد المبلغ بعد خصم الأيام المستخدمة، وتكلفة الملصق المطبوع خصيصًا مستثناة حسب <span class="ltr">§312g Abs. 2 Nr. 1</span>. هذا ليس فترة مجانية.</td></tr>
+      <tr><td class="ltr">PAngV</td><td>الأسعار تُعرض شاملة الضريبة للمستهلك</td><td>"inkl. 19 % MwSt."، وBusiness تُعرض صافية</td></tr>
+      <tr><td class="ltr">UWG §7</td><td>لا رسائل تسويقية دون موافقة صريحة</td><td>رسائل التنبيه رسائل خدمة. التسويق بموافقة منفصلة (Double Opt-in)</td></tr>
+      <tr><td class="ltr">BFSG (منذ 28.06.2025)</td><td>إمكانية الوصول لخدمات التجارة الإلكترونية للمستهلكين (المؤسسات الصغيرة جدًا معفاة، لكننا نلتزم من البداية)</td><td>WCAG 2.2 AA، وBarrierefreiheitserklärung</td></tr>
+      <tr><td class="ltr">VerpackG</td><td>تسجيل في LUCID للتغليف المشحون للمستهلكين</td><td>تسجيل وعقد مع نظام ثنائي (Duales System) قبل أول شحنة</td></tr>
+      <tr><td class="ltr">MarkenG / EUTMR</td><td>حماية الاسم</td><td>تسجيل لدى DPMA وEUIPO</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>6.2 مبدأ إخفاء هوية الماسح</h3>
+  <ul>
+    <li>لا حساب ولا رقم ولا بريد ولا كوكيز.</li>
+    <li>يُقطع عنوان IP فورًا: آخر جزء في IPv4 (‎/24)، و‎/48 في IPv6. لا يُخزَّن العنوان الكامل في أي سجل، والـ Reverse proxy مضبوط على هذا.</li>
+    <li>يُستخدم مرجع مستعار <code>scanner_ref</code> لتحديد المعدل والحظر فقط، ويُحذف بعد 24 ساعة.</li>
+    <li>لا تظهر للمالك أي معلومة عن الماسح غير الوقت ونوع التنبيه والنص (إن كتب نصًا).</li>
+  </ul>
+
+  <h3>6.3 جهة الاتصال الاحتياطية</h3>
+  <ol>
+    <li>يُدخل المالك الاسم والقناة (WhatsApp أو البريد).</li>
+    <li>تصل للجهة رسالة: "Jonas möchte Sie als Notfallkontakt für ParkShield hinterlegen". فيها رابط تأكيد ورابط رفض وشرح مختصر للبيانات التي ستصلها.</li>
+    <li>لا تُستخدم قبل التأكيد. الرفض أو عدم الرد خلال 14 يومًا يحذف البيانات تلقائيًا.</li>
+    <li>كل تنبيه تصعيد يحتوي رابط "لا أريد استلام تنبيهات بعد الآن".</li>
+  </ol>
+
+  <h3>6.4 الأسس القانونية للمعالجة</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المعالجة</th><th>البيانات</th><th>الأساس</th></tr></thead>
+    <tbody>
+      <tr><td>تقديم الخدمة للمالك</td><td>البريد، والقنوات، والسيارة، والتنبيهات</td><td class="ltr">Art. 6(1)(b) — Vertrag</td></tr>
+      <tr><td>استقبال تنبيه من الماسح</td><td>نوع التنبيه، والنص الحر</td><td class="ltr">Art. 6(1)(f) — berechtigtes Interesse</td></tr>
+      <tr><td>الحماية من الإساءة</td><td>scanner_ref، وIP مقطوع</td><td class="ltr">Art. 6(1)(f)</td></tr>
+      <tr><td>WhatsApp وSMS</td><td>رقم الهاتف</td><td class="ltr">Art. 6(1)(a) — Einwilligung (Opt-in)</td></tr>
+      <tr><td>جهة الاتصال الاحتياطية</td><td>الاسم والقناة</td><td class="ltr">Art. 6(1)(a) من الجهة نفسها</td></tr>
+      <tr><td>الفوترة وحفظ الفواتير</td><td>الاسم والعنوان والفواتير</td><td class="ltr">Art. 6(1)(c) — §147 AO / §257 HGB</td></tr>
+      <tr><td>نشرة بريدية</td><td>البريد</td><td class="ltr">Art. 6(1)(a) + DOI</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>6.5 جدول الاحتفاظ بالبيانات</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>البيانات</th><th>مدة الاحتفاظ</th><th>آلية الحذف</th></tr></thead>
+    <tbody>
+      <tr><td>scanner_ref (مرجع الماسح)</td><td>24 ساعة</td><td>دالة <code>run_retention()</code> كل ساعة، ومفاتيح Valkey تنتهي تلقائيًا (TTL)</td></tr>
+      <tr><td>النص الحر في التنبيه، ورسائل الدردشة</td><td>7 أيام</td><td>run_retention</td></tr>
+      <tr><td>التنبيهات وسجلات التسليم</td><td>90 يومًا</td><td>run_retention (حذف متسلسل)</td></tr>
+      <tr><td>موقع الركن</td><td>24 ساعة بعد انتهاء الجلسة</td><td>run_retention</td></tr>
+      <tr><td>عنوان الشحن</td><td>90 يومًا بعد التسليم</td><td>run_retention (الفواتير تُحفظ في نظام المحاسبة)</td></tr>
+      <tr><td>الفواتير</td><td>10 سنوات (<span class="ltr">§147 AO</span>)</td><td>Stripe ونظام المحاسبة (lexoffice أو DATEV)</td></tr>
+      <tr><td>سجل التدقيق</td><td>12 شهرًا</td><td>run_retention</td></tr>
+      <tr><td>سجلات الخادم (Logs)</td><td>14 يومًا، ودون IP كامل</td><td>إعداد الاحتفاظ في Loki</td></tr>
+      <tr><td>النسخ الاحتياطية</td><td>35 يومًا</td><td>سياسة الاحتفاظ في pgBackRest. البيانات المحذوفة تختفي من النسخ الاحتياطية خلال 35 يومًا كحد أقصى.</td></tr>
+      <tr><td>الحساب بعد طلب الحذف</td><td>24 ساعة (مهلة للتراجع)</td><td>حذف فعلي، مع إبطال كل الرموز فورًا</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>6.6 المزودون وعقود المعالجة (AVV)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المزوّد</th><th>الدور</th><th>المقر/الاستضافة</th><th>ملاحظة</th></tr></thead>
+    <tbody>
+      <tr><td>Hetzner Online</td><td>الاستضافة والنسخ الاحتياطية</td><td>ألمانيا</td><td>AVV متاح من لوحة التحكم</td></tr>
+      <tr><td>Brevo</td><td>البريد التشغيلي</td><td>فرنسا / الاتحاد الأوروبي</td><td>AVV</td></tr>
+      <tr><td>360dialog</td><td>مزوّد WhatsApp Business (BSP)</td><td>برلين</td><td>الرسائل تمر عبر Meta (نقل للولايات المتحدة على أساس EU-US DPF)، ويُذكر هذا في سياسة الخصوصية مع Opt-in</td></tr>
+      <tr><td>seven.io</td><td>SMS (المرحلة 2)</td><td>ألمانيا</td><td>AVV</td></tr>
+      <tr><td>sipgate أو Twilio</td><td>الاتصال المقنّع (المرحلة 2)</td><td>ألمانيا / الولايات المتحدة (DPF)</td><td>تجربة تقنية (Spike) في المرحلة 2 لاختيار أحدهما</td></tr>
+      <tr><td>Stripe</td><td>الدفع والاشتراكات</td><td>أيرلندا</td><td>AVV وSCCs</td></tr>
+      <tr><td>Friendly Captcha</td><td>Captcha</td><td>ألمانيا</td><td>بلا كوكيز</td></tr>
+      <tr><td>Mistral AI</td><td>مساعد الدعم (المرحلة 2)</td><td>فرنسا</td><td>دون بيانات شخصية في الطلبات</td></tr>
+      <tr><td>Sentry</td><td>تتبع الأخطاء</td><td>منطقة EU (فرانكفورت)</td><td>إخفاء البيانات الشخصية (PII scrubbing)</td></tr>
+      <tr><td>مطبعة ألمانية (مثل Flyeralarm أو WIRmachenDRUCK أو مطبعة محلية)</td><td>طباعة الملصقات وشحنها</td><td>ألمانيا</td><td>AVV لأنها تستلم عنوان الشحن</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="architecture">
+  <h2><span class="n">7</span>المعمارية التقنية</h2>
+
+  <h3>7.1 الصورة العامة</h3>
+<pre class="mermaid">
+flowchart LR
+  subgraph Clients
+    S[Scanner PWA - Next.js]
+    O[Owner portal - Next.js]
+    A[Admin - Next.js RBAC]
+  end
+  S --> EDGE[Hetzner LB + Caddy, TLS 1.3]
+  O --> EDGE
+  A --> EDGE
+  EDGE --> API[API - NestJS modular monolith]
+  API --> PG[(PostgreSQL 16 primary)]
+  PG -.streaming replica.-> PGR[(PostgreSQL replica)]
+  API --> VK[(Valkey 8 - rate limits + queues)]
+  VK --> W[Worker - BullMQ]
+  W --> PG
+  W --> PUSH[Web Push VAPID]
+  W --> MAIL[Brevo e-mail]
+  W --> WA[360dialog WhatsApp]
+  W --> SMS[seven.io SMS - phase 2]
+  API --> STRIPE[Stripe Billing]
+  API --> FC[Friendly Captcha]
+  W --> PRINT[Print partner API/SFTP]
+  PG --> BK[(pgBackRest to Object Storage, other location)]
+</pre>
+
+  <h3>7.2 قرارات التقنية (معدّلة)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>الطبقة</th><th>الاختيار</th><th>السبب، وما تغيّر عن V1</th></tr></thead>
+    <tbody>
+      <tr><td>الواجهة</td><td>Next.js 15 (App Router) + React 19 + Tailwind 4</td><td>صفحة الماسح تُولَّد على الخادم بأقل قدر من JS. البوابة ولوحة الإدارة في نفس المستودع (Monorepo).</td></tr>
+      <tr><td>الواجهة الخلفية</td><td>NestJS 11 كـ <strong>Modular Monolith</strong></td><td>بدلًا من "Go Microservices": فريق صغير ونشر واحد. الوحدات منفصلة (scan، alerts، notifications، billing، ...) فيمكن فصلها لاحقًا.</td></tr>
+      <tr><td>قاعدة البيانات</td><td>PostgreSQL 16 + نسخة متماثلة</td><td>دون تغيير. الترحيلات بـ SQL خام (dbmate)، والاستعلامات عبر Kysely لضمان الأنواع.</td></tr>
+      <tr><td>Cache والطوابير</td><td>Valkey 8 + BullMQ</td><td>بدلًا من Redis Enterprise. مع AOF، وقاعدة البيانات مصدر الحقيقة.</td></tr>
+      <tr><td>الاستضافة</td><td>Hetzner Cloud (NBG1/FSN1)</td><td>أرخص بنحو 3 إلى 5 مرات من AWS للحجم نفسه، وشركة ألمانية. AWS Frankfurt خطة بديلة فقط.</td></tr>
+      <tr><td>البنية كرمز (IaC)</td><td>Terraform (hcloud) + Ansible + Docker Compose</td><td>يمكن الانتقال لـ Kubernetes (k3s) في مرحلة التوسع إذا احتجنا.</td></tr>
+      <tr><td>الأسرار</td><td>SOPS + age (في Git مشفّرة) أو Infisical EU</td><td>مفاتيح التشفير لا تمر عبر CI بشكل مقروء.</td></tr>
+      <tr><td>المراقبة</td><td>Grafana + Prometheus + Loki (مستضافة ذاتيًا)، Sentry EU، Better Stack</td><td>تنبيه الفريق عبر Telegram أو Slack.</td></tr>
+      <tr><td>الدفع</td><td>Stripe Billing + Stripe Tax + Customer Portal</td><td>بطاقات، وSEPA Lastschrift، وPayPal، وApple Pay وGoogle Pay، وKlarna. فواتير متوافقة مع القانون الألماني.</td></tr>
+      <tr><td>الدعم</td><td>Zammad (مستضاف ذاتيًا، ألماني)</td><td>بدلًا من بناء نظام تذاكر من الصفر. توفير حوالي 200 ساعة تطوير.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>7.3 مسار التنبيه بالتفصيل</h3>
+<pre class="mermaid">
+sequenceDiagram
+  participant S as Scanner browser
+  participant API as API
+  participant DB as PostgreSQL
+  participant Q as Valkey/BullMQ
+  participant W as Worker
+  participant O as Owner phone
+  participant E as Emergency contact
+  S->>API: GET /v1/scan/K7QX4M2R9T
+  API->>DB: lookup sha256(code), active token + live subscription
+  API-->>S: CTA, vehicle label, alert types
+  S->>API: POST /alerts (type, captcha)
+  API->>API: captcha + 3 rate limits + moderation
+  API->>DB: INSERT alert (status dispatched, escalate_at)
+  API->>Q: job dispatch + delayed job escalate
+  API-->>S: alertId + statusToken
+  Q->>W: dispatch
+  W->>O: Web Push + WhatsApp (urgent = all channels)
+  W->>DB: alert_deliveries, status delivered
+  O->>API: POST /v1/ack/token (Ich komme)
+  API->>DB: status acknowledged (atomic)
+  API->>Q: remove escalate job
+  S->>API: GET status (poll)
+  API-->>S: acknowledged
+  Note over Q,E: if no ack before escalate_at
+  Q->>W: escalate
+  W->>DB: UPDATE status escalated WHERE status in dispatched/delivered
+  W->>E: incident type + vehicle label only
+</pre>
+
+  <h3>7.4 حالات التنبيه</h3>
+<pre class="mermaid">
+stateDiagram-v2
+  [*] --> created
+  created --> blocked: moderation or abuse
+  created --> dispatched: queued
+  dispatched --> delivered: at least one channel sent
+  dispatched --> acknowledged
+  delivered --> acknowledged: owner taps Ich komme
+  delivered --> escalated: timer expired
+  dispatched --> escalated: timer expired
+  escalated --> acknowledged: owner taps later
+  delivered --> expired: after 2 h
+  escalated --> expired: after 2 h
+  acknowledged --> [*]
+  expired --> [*]
+  blocked --> [*]
+</pre>
+
+  <h3>7.5 تصميم الرموز والتشفير</h3>
+  <div class="grid2">
+    <div class="card"><h4>رمز الملصق</h4>
+      <ul>
+        <li>10 محارف Crockford Base32، أي 50 بت. مع حد 20 تنبيهًا يوميًا لكل رمز، يستحيل عمليًا تخمين رمز صالح.</li>
+        <li>لا يُخزَّن إلا <code>SHA-256</code> في <code>qr_tokens.code_hash</code>، وآخر 4 محارف للدعم الفني.</li>
+        <li>الرابط ثابت والملصق لا يتغير. "التدوير" يعني إلغاء الرمز وطباعة ملصق جديد.</li>
+      </ul></div>
+    <div class="card"><h4>التشفير على مستوى الحقل</h4>
+      <ul>
+        <li>صيغة الحقل: <code>[إصدار المفتاح 1B][IV 12B][Tag 16B][النص المشفر]</code> بخوارزمية AES-256-GCM.</li>
+        <li>للبحث يُستخدم Blind Index: <code>HMAC-SHA256(key, normalize(value))</code>.</li>
+        <li>تدوير المفاتيح: يُضاف <code>DATA_KEY_V2</code>، والكتابات الجديدة تستخدمه، ومهمة خلفية تعيد تشفير البيانات القديمة.</li>
+      </ul></div>
+    <div class="card"><h4>رموز التأكيد والحالة</h4>
+      <ul>
+        <li>256 بت عشوائية، ولا يُخزَّن إلا الـ hash.</li>
+        <li>رمز التأكيد يُستخدم مرة واحدة، ويُمحى من الصف عند الاستخدام.</li>
+        <li>رمز الحالة يبقى في ذاكرة متصفح الماسح فقط (sessionStorage).</li>
+      </ul></div>
+    <div class="card"><h4>تحديد المعدل</h4>
+      <ul>
+        <li><code>rl:st:{token}:{ref}</code>: تنبيه واحد كل 15 دقيقة.</li>
+        <li><code>rl:sg:{ref}</code>: ستة تنبيهات في الساعة.</li>
+        <li><code>rl:tg:{token}</code>: عشرون تنبيهًا في 24 ساعة.</li>
+        <li>يُقرأ العداد أولًا ثم يُزاد، فلا يُستهلك الرصيد عند الرفض.</li>
+      </ul></div>
+  </div>
+
+  <h3>7.6 بنية المستودع المقترحة</h3>
+<pre>
+parkshield/
+├── apps/
+│   ├── web/            # Next.js: landing, scanner PWA (/s/[code]), owner portal, /admin
+│   └── api/            # NestJS: scan, alerts, notifications, escalation, billing, gdpr, admin
+├── packages/
+│   ├── shared/         # alert types, zod schemas, plan limits (used by web + api)
+│   ├── ui/             # design system components
+│   └── i18n/           # de.json, en.json (ICU)
+├── db/migrations/      # dbmate SQL migrations (Appendix A)
+├── infra/
+│   ├── terraform/      # hcloud servers, LB, firewall, volumes, object storage
+│   └── ansible/        # hardening, docker, caddy, pgbackrest, monitoring agents
+├── e2e/                # Playwright scenarios
+├── load/               # k6 scripts
+└── docs/               # this document, ADRs, runbooks
+</pre>
+</section>
+
+<section id="data">
+  <h2><span class="n">8</span>نموذج البيانات (ERD)</h2>
+  <p>30 جدولًا على PostgreSQL 16. الـ SQL الكامل في <a href="#appendix">الملحق أ</a>، وتم اختباره فعليًا على PostgreSQL 16 (إنشاء الجداول وتشغيل دالة الاحتفاظ). الرسم يعرض الجداول الأساسية وعلاقاتها.</p>
+<pre class="mermaid">
+erDiagram
+  users ||--o{ vehicles : owns
+  users ||--o{ contact_channels : has
+  users ||--o{ push_subscriptions : has
+  users ||--o{ emergency_contacts : invites
+  users ||--o{ notification_rules : sets
+  users ||--o{ subscriptions : pays
+  users ||--o{ consents : gives
+  users ||--o{ decal_orders : places
+  users ||--o{ parking_sessions : starts
+  users ||--o{ support_tickets : opens
+  organizations ||--o{ organization_members : has
+  organizations ||--o{ vehicles : owns
+  organizations ||--o{ subscriptions : pays
+  plans ||--o{ subscriptions : defines
+  vehicles ||--o{ qr_tokens : carries
+  qr_tokens ||--o{ alerts : receives
+  alert_types ||--o{ alerts : classifies
+  alerts ||--o{ alert_deliveries : sends
+  alerts ||--o{ alert_messages : chat
+  alerts ||--o{ abuse_reports : reported
+  emergency_contacts ||--o{ alert_deliveries : receives
+  decal_orders ||--o{ decal_order_items : contains
+  qr_tokens ||--o{ decal_order_items : printed_as
+  support_tickets ||--o{ ticket_messages : contains
+  users {
+    uuid id PK
+    citext email UK
+    enum role
+    enum preferred_lang
+    text timezone
+  }
+  vehicles {
+    uuid id PK
+    uuid owner_user_id FK
+    uuid organization_id FK
+    text nickname
+    bytea plate_enc
+    bytea plate_bidx
+  }
+  qr_tokens {
+    uuid id PK
+    uuid vehicle_id FK
+    bytea code_hash UK
+    enum status
+    text cta_header
+  }
+  alerts {
+    uuid id PK
+    uuid qr_token_id FK
+    text alert_type FK
+    enum status
+    bytea scanner_ref
+    bytea ack_token_hash UK
+    timestamptz escalate_at
+  }
+  subscriptions {
+    uuid id PK
+    enum plan FK
+    enum status
+    text stripe_subscription_id UK
+  }
+</pre>
+
+  <h3>8.1 قاموس الجداول</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المجموعة</th><th>الجداول</th><th>الغرض</th></tr></thead>
+    <tbody>
+      <tr><td>الهوية</td><td class="mono">users, webauthn_credentials, magic_link_tokens, sessions</td><td>تسجيل دخول بلا كلمات مرور، وأدوار الموظفين</td></tr>
+      <tr><td>المؤسسات</td><td class="mono">organizations, organization_members</td><td>باقة Business: أدوار owner وmanager وdriver</td></tr>
+      <tr><td>القنوات</td><td class="mono">contact_channels, push_subscriptions</td><td>أين يستلم المالك التنبيهات: مُتحقق منها، مع أولوية وOpt-in</td></tr>
+      <tr><td>السيارات والرموز</td><td class="mono">vehicles, qr_tokens</td><td>اللوحة مشفرة، والرمز مخزّن كـ hash فقط، مع دورة حياة الملصق</td></tr>
+      <tr><td>التصعيد والقواعد</td><td class="mono">emergency_contacts, notification_rules</td><td>موافقة جهة الاتصال، وساعات الهدوء، ومهلة التصعيد</td></tr>
+      <tr><td>التنبيهات</td><td class="mono">alert_types, alerts, alert_deliveries, alert_messages</td><td>التنبيه وحالته، وكل محاولة إرسال وتكلفتها، والدردشة</td></tr>
+      <tr><td>الإساءة</td><td class="mono">abuse_reports, scanner_blocks</td><td>بلاغات المالكين، والحظر المؤقت بالمرجع المستعار</td></tr>
+      <tr><td>الفوترة</td><td class="mono">plans, subscriptions, usage_counters</td><td>الباقات وحدودها، والاشتراك، وعداد الاستخدام العادل</td></tr>
+      <tr><td>المتجر</td><td class="mono">decal_orders, decal_order_items</td><td>طلبات الملصقات، والطباعة، والشحن</td></tr>
+      <tr><td>مساعد الركن</td><td class="mono">parking_sessions</td><td>المؤقت والموقع (مشفر، يُحذف بعد 24 ساعة)</td></tr>
+      <tr><td>الامتثال</td><td class="mono">consents, data_subject_requests, audit_logs</td><td>إثبات الموافقات، وطلبات GDPR بمواعيد، وسجل التدقيق</td></tr>
+      <tr><td>الدعم</td><td class="mono">support_tickets, ticket_messages</td><td>مرآة لتذاكر Zammad (أو بديل داخلي)</td></tr>
+      <tr><td>البنية</td><td class="mono">outbox_events</td><td>نمط Outbox لنقل الأحداث من قاعدة البيانات للطابور دون فقدان</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="security">
+  <h2><span class="n">9</span>الأمن ومكافحة الإساءة</h2>
+  <h3>9.1 نموذج التهديدات</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>التهديد</th><th>السيناريو</th><th>الحماية</th></tr></thead>
+    <tbody>
+      <tr><td>إغراق المالك (Spam)</td><td>شخص يصوّر الملصق وينشره، أو يرسل من أجهزة متعددة</td><td>3 حدود معدل، وCaptcha، وحد يومي لكل رمز، وبلاغ وحظر، وإلغاء الرمز وإصدار جديد بضغطة</td></tr>
+      <tr><td>مضايقة عبر النص</td><td>شتائم أو تهديد أو مشاركة رقم هاتف</td><td>فلتر قواعد (MVP) ثم مصنّف ذكي أوروبي (المرحلة 2). الرسائل المحظورة لا تصل أبدًا.</td></tr>
+      <tr><td>تتبع المالك</td><td>ربط ملصق بشخص أو بعنوان</td><td>صفحة الماسح لا تعرض أي بيانات شخصية. الاسم الوصفي يختاره المالك. لا خرائط.</td></tr>
+      <tr><td>تخمين الرموز</td><td>محاولة رموز عشوائية</td><td>50 بت، وحد على مستوى IP لطلبات 404 (30 في الدقيقة)، ومراقبة معدل 404</td></tr>
+      <tr><td>استيلاء على حساب</td><td>Phishing أو سرقة بريد</td><td>Passkeys، وMagic link صالح 15 دقيقة يُستخدم مرة واحدة، وإشعار بالبريد عند كل دخول من جهاز جديد</td></tr>
+      <tr><td>تسرّب قاعدة البيانات</td><td>اختراق أو نسخة احتياطية مسروقة</td><td>الحقول الحساسة مشفرة، والرموز مخزنة كـ hash، والنسخ الاحتياطية مشفرة (pgBackRest AES-256)، والمفاتيح خارج قاعدة البيانات</td></tr>
+      <tr><td>إساءة داخلية</td><td>موظف دعم يطّلع على البيانات</td><td>RBAC، وإخفاء الحقول الحساسة، وسجل تدقيق، وفصل صلاحية فك التشفير</td></tr>
+      <tr><td>حجب الخدمة (DDoS)</td><td>إغراق صفحة الماسح</td><td>حماية DDoS من Hetzner، وحد معدل في Caddy، وصفحة الماسح خفيفة وقابلة للتخزين المؤقت (Cache)</td></tr>
+      <tr><td>انتحال إشعار</td><td>رسالة WhatsApp مزيفة باسم ParkShield</td><td>حساب WhatsApp Business موثّق، ونطاق ثابت، وتوعية في الأسئلة الشائعة: "لن نطلب منك أي دفع داخل التنبيه"</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>9.2 الممارسات الإلزامية</h3>
+  <ul>
+    <li>TLS 1.3 فقط، وHSTS preload، وCSP صارم، وSameSite=Strict للكوكيز الضرورية في البوابة.</li>
+    <li>تحديث الحزم آليًا (Renovate)، وفحص الحزم في CI (npm audit وOSV)، وفحص الشيفرة (SAST عبر Semgrep).</li>
+    <li>الخوادم دون دخول بكلمة مرور، وSSH عبر مفاتيح من خلال WireGuard، وجدار حماية Hetzner مع فتح المنفذ 443 للـ LB فقط.</li>
+    <li>اختبار اختراق خارجي قبل الإطلاق وبعد كل مرحلة كبيرة، وسياسة إفصاح مسؤول (security.txt).</li>
+    <li>خطة استجابة للحوادث، تشمل إبلاغ الجهة الرقابية خلال 72 ساعة (Art. 33 GDPR).</li>
+  </ul>
+</section>
+
+<section id="stories">
+  <h2><span class="n">10</span>User Stories للـ MVP، مرتبة حسب التنفيذ</h2>
+  <p class="lead">الترتيب هو ترتيب البناء الفعلي: كل قصة تعتمد على ما قبلها. النقاط (Story Points) بمقياس فيبوناتشي. سرعة الفريق المتوقعة 25 إلى 30 نقطة في كل Sprint (أسبوعان)، والمجموع 214 نقطة، أي 8 Sprints ثم أسبوعا Hardening.</p>
+
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>القصة</th><th>معايير القبول</th><th class="num">نقاط</th><th>Sprint</th></tr></thead>
+    <tbody>
+      <tr><td colspan="5"><strong>E0: الأساس التقني</strong></td></tr>
+      <tr><td class="mono">US-01</td><td>بصفتي مطورًا، أريد بيئة محلية وCI/CD لأنشر لبيئة Staging بأمان</td><td>تشغيل البيئة كاملة بأمر واحد. CI يشغّل Lint وTypecheck وTests وE2E. الدمج في main ينشر لـ Staging تلقائيًا.</td><td class="num">8</td><td>1</td></tr>
+      <tr><td class="mono">US-02</td><td>بصفتي مسؤول عمليات، أريد بنية Hetzner مكتوبة كرمز مع مراقبة ونسخ احتياطية</td><td>Terraform ينشئ البيئة من الصفر. تنبيه عند توقف الخدمة. تمرين استعادة ناجح وموثّق.</td><td class="num">8</td><td>1</td></tr>
+      <tr><td class="mono">US-03</td><td>بصفتي مطورًا، أريد نظام تصميم بالألمانية والإنجليزية</td><td>مكونات أساسية بتباين AA. ملفات ترجمة ICU. تبديل اللغة دون إعادة تحميل.</td><td class="num">5</td><td>1</td></tr>
+
+      <tr><td colspan="5"><strong>E1: الحساب والاشتراك</strong></td></tr>
+      <tr><td class="mono">US-04</td><td>بصفتي زائرًا، أريد صفحة هبوط تشرح الخدمة والأسعار وتحتوي الصفحات القانونية</td><td>Impressum وDatenschutz وAGB وWiderruf وBarrierefreiheit. أسعار شاملة الضريبة. Lighthouse 90 أو أكثر.</td><td class="num">5</td><td>2</td></tr>
+      <tr><td class="mono">US-05</td><td>بصفتي عميلًا جديدًا، أريد التسجيل ببريدي دون كلمة مرور</td><td>رابط صالح 15 دقيقة لمرة واحدة. بعد الدخول يُعرض إضافة Passkey. إشعار عند الدخول من جهاز جديد.</td><td class="num">8</td><td>2</td></tr>
+      <tr><td class="mono">US-06</td><td>بصفتي عميلًا، أريد الدفع لباقة Plus سنويًا أو شهريًا</td><td>Stripe Checkout (بطاقة، SEPA، PayPal، Apple Pay). خانة البدء الفوري وحق التراجع. فاتورة PDF. لا وصول لأي ميزة قبل نجاح الدفع.</td><td class="num">8</td><td>2</td></tr>
+      <tr><td class="mono">US-07</td><td>بصفتي عميلًا، أريد إلغاء اشتراكي بسهولة</td><td>زر „Verträge hier kündigen“ ظاهر دائمًا. صفحة تأكيد. بريد تأكيد بتاريخ الانتهاء. الإلغاء متاح أيضًا دون تسجيل دخول.</td><td class="num">5</td><td>2</td></tr>
+      <tr><td class="mono">US-08</td><td>بصفتي النظام، أريد مزامنة حالة الاشتراك من Stripe</td><td>Webhooks موقّعة وقابلة للتكرار دون أثر جانبي (idempotent). عند فشل الدفع: حالة past_due وثلاث محاولات وتذكير. عند الانتهاء: الملصق يصبح غير فعال.</td><td class="num">5</td><td>3</td></tr>
+
+      <tr><td colspan="5"><strong>E2: السيارات والملصقات</strong></td></tr>
+      <tr><td class="mono">US-09</td><td>بصفتي مالكًا، أريد إضافة سيارة باسم وصفي ولوحة</td><td>اللوحة مشفرة ولا تظهر للماسح. عدد السيارات حسب الباقة، مع رسالة ترقية عند الوصول للحد.</td><td class="num">3</td><td>3</td></tr>
+      <tr><td class="mono">US-10</td><td>بصفتي مالكًا، أريد تصميم ملصقي ومعاينته</td><td>6 قوالب، وعنوان CTA، ومعاينة فورية بصيغة SVG، وتصدير PDF جاهز للطباعة (CMYK، 3 مم هامش قص).</td><td class="num">8</td><td>3</td></tr>
+      <tr><td class="mono">US-11</td><td>بصفتي مالكًا، أريد طلب الملصق المشمول وتتبعه</td><td>عنوان الشحن مشفر. الطلب يصل للمطبعة تلقائيًا (API أو SFTP يومي). رقم تتبع بالبريد. PDF مؤقت فوري.</td><td class="num">8</td><td>3</td></tr>
+      <tr><td class="mono">US-12</td><td>بصفتي مالكًا، أريد تفعيل الملصق بمسحه أول مرة</td><td>المسح الأول من حسابي يفعّل الرمز ويرسل تنبيهًا تجريبيًا عبر كل القنوات.</td><td class="num">3</td><td>4</td></tr>
+      <tr><td class="mono">US-13</td><td>بصفتي مالكًا، أريد إلغاء رمز مسرّب وطلب بديل</td><td>الإلغاء فوري، والرمز القديم يعرض صفحة "غير فعال". الملصق البديل مدفوع (6.90 €) أو PDF مجاني للطباعة المنزلية.</td><td class="num">3</td><td>4</td></tr>
+
+      <tr><td colspan="5"><strong>E3: الماسح</strong></td></tr>
+      <tr><td class="mono">US-14</td><td>بصفتي ماسحًا، أريد فتح صفحة بلغتي وإرسال تنبيه بضغطة</td><td>تحميل أقل من 1.5 ثانية. 7 أزرار كبيرة. Captcha غير مرئي. لا كوكيز. تأكيد بصري بعد الإرسال.</td><td class="num">8</td><td>4</td></tr>
+      <tr><td class="mono">US-15</td><td>بصفتي ماسحًا، أريد كتابة رسالة قصيرة</td><td>280 حرفًا كحد أقصى. رسالة رفض واضحة عند الشتائم أو الروابط أو الأرقام. لا تُرسل الرسالة المرفوضة.</td><td class="num">5</td><td>4</td></tr>
+      <tr><td class="mono">US-16</td><td>بصفتي ماسحًا، أريد رؤية حالة تنبيهي حتى يرد المالك</td><td>الحالات: Gesendet، وZugestellt، وBestätigt (مع الوقت)، وEskaliert، وAbgelaufen. التحديث خلال 3 ثوانٍ. تبقى الحالة ظاهرة بعد إعادة تحميل الصفحة في نفس الجلسة.</td><td class="num">5</td><td>5</td></tr>
+      <tr><td class="mono">US-17</td><td>بصفتي النظام، أريد منع الإغراق والإساءة</td><td>3 حدود معدل مختبرة (Unit وE2E). رد 429 مع وقت الانتظار برسالة ودية. لا يُخزَّن IP كامل.</td><td class="num">5</td><td>5</td></tr>
+
+      <tr><td colspan="5"><strong>E4: الإشعارات والتأكيد والتصعيد</strong></td></tr>
+      <tr><td class="mono">US-18</td><td>بصفتي مالكًا، أريد تفعيل Web Push على أجهزتي</td><td>iOS 16.4 أو أحدث (PWA مضافة للشاشة الرئيسية) وAndroid وسطح المكتب. إرشاد خاص لمستخدمي iOS. إدارة الأجهزة وحذفها.</td><td class="num">8</td><td>5</td></tr>
+      <tr><td class="mono">US-19</td><td>بصفتي مالكًا، أريد ربط WhatsApp</td><td>OTP عبر WhatsApp. Opt-in مسجّل في consents. تنبيه تجريبي. فك الربط بضغطة.</td><td class="num">8</td><td>5</td></tr>
+      <tr><td class="mono">US-20</td><td>بصفتي مالكًا، أريد استلام التنبيه على القناة المناسبة</td><td>الترتيب حسب الأولوية. العاجل يُرسل على كل القنوات. كل محاولة مسجّلة بحالتها وتكلفتها. البديل يعمل عند فشل قناة.</td><td class="num">13</td><td>6</td></tr>
+      <tr><td class="mono">US-21</td><td>بصفتي مالكًا، أريد الضغط على „Ich komme“</td><td>زر في Push وWhatsApp والبريد. الاستخدام الثاني يعرض "تم التأكيد مسبقًا". الماسح يرى التأكيد خلال 3 ثوانٍ.</td><td class="num">5</td><td>6</td></tr>
+      <tr><td class="mono">US-22</td><td>بصفتي مالكًا، أريد إضافة جهة اتصال احتياطية</td><td>دعوة مع موافقة أو رفض. حالة pending ظاهرة. حذف تلقائي بعد 14 يومًا دون رد.</td><td class="num">5</td><td>6</td></tr>
+      <tr><td class="mono">US-23</td><td>بصفتي النظام، أريد تصعيد التنبيه إذا لم يرد المالك</td><td>تصعيد بعد المهلة (±60 ثانية). لا تصعيد بعد التأكيد. لا تصعيد مزدوج. يعمل حتى بعد إعادة تشغيل Valkey (اختبار Chaos).</td><td class="num">8</td><td>6</td></tr>
+      <tr><td class="mono">US-24</td><td>بصفتي مالكًا، أريد ساعات هدوء</td><td>لكل يوم من الأسبوع. التنبيه العاجل يتجاوزها افتراضيًا. التنبيه المكتوم يظهر في السجل.</td><td class="num">3</td><td>7</td></tr>
+      <tr><td class="mono">US-25</td><td>بصفتي النظام، أريد احترام حدود الاستخدام العادل</td><td>عداد شهري لكل قناة. عند 80% بريد تحذيري. عند 100% يعود الإرسال لـ Push والبريد.</td><td class="num">3</td><td>7</td></tr>
+
+      <tr><td colspan="5"><strong>E5: سجل التنبيهات، الخصوصية، مساعد الركن</strong></td></tr>
+      <tr><td class="mono">US-26</td><td>بصفتي مالكًا، أريد سجل تنبيهاتي والإبلاغ عن إساءة</td><td>آخر 90 يومًا. زر الإبلاغ يحظر المرجع 30 يومًا ويرسل البلاغ لمركز الإساءة.</td><td class="num">5</td><td>7</td></tr>
+      <tr><td class="mono">US-27</td><td>بصفتي مالكًا، أريد تنزيل بياناتي وحذف حسابي</td><td>ملف JSON وPDF خلال دقائق. الحذف بعد 24 ساعة مع إمكانية التراجع. إبطال الرموز فورًا. بريد تأكيد.</td><td class="num">8</td><td>7</td></tr>
+      <tr><td class="mono">US-28</td><td>بصفتي النظام، أريد تطبيق جدول الاحتفاظ تلقائيًا</td><td>run_retention كل ساعة، مع اختبار لكل قاعدة احتفاظ.</td><td class="num">3</td><td>7</td></tr>
+      <tr><td class="mono">US-29</td><td>بصفتي مالكًا، أريد مؤقت عداد الركن وحفظ الموقع</td><td>تذكير قبل 10 و5 دقائق. رابط ملاحة. حذف الموقع بعد 24 ساعة.</td><td class="num">8</td><td>8</td></tr>
+
+      <tr><td colspan="5"><strong>E6: الإدارة والدعم</strong></td></tr>
+      <tr><td class="mono">US-30</td><td>بصفتي موظف دعم، أريد البحث عن عميل وحل مشكلته</td><td>بحث بالبريد أو آخر 4 محارف من الرمز. البيانات الحساسة مخفية. كل إجراء مسجّل في audit_logs.</td><td class="num">8</td><td>8</td></tr>
+      <tr><td class="mono">US-31</td><td>بصفتي مسؤولًا، أريد إدارة الإساءة وطلبات GDPR والطلبات</td><td>طوابير بمواعيد. تنفيذ بضغطة. لوحة طلبات الملصقات وحالاتها.</td><td class="num">8</td><td>8</td></tr>
+      <tr><td class="mono">US-32</td><td>بصفتي مؤسسًا، أريد لوحة مؤشرات</td><td>MRR والمشتركون وChurn والتنبيهات ونسبة التسليم والتأكيد وتكلفة الرسائل يوميًا.</td><td class="num">5</td><td>8</td></tr>
+      <tr><td class="mono">US-33</td><td>بصفتي عميلًا، أريد مركز مساعدة ونموذج تواصل</td><td>20 مقالًا أساسيًا بالألمانية والإنجليزية. النموذج يفتح تذكرة في Zammad. رد خلال 48 ساعة في Plus.</td><td class="num">3</td><td>8</td></tr>
+      <tr><td class="mono">US-34</td><td>بصفتي الفريق، أريد إطلاقًا آمنًا</td><td>اختبار اختراق دون ثغرات حرجة أو عالية مفتوحة. اختبار حمل k6. تدقيق WCAG. Runbooks. صفحة الحالة.</td><td class="num">13</td><td>Hardening</td></tr>
+    </tbody>
+    <tfoot><tr><td colspan="3">المجموع</td><td class="num">214</td><td>8 Sprints + Hardening</td></tr></tfoot>
+  </table></div>
+
+  <h3>قصص المراحل اللاحقة (ملخص)</h3>
+  <div class="grid2">
+    <div class="card"><h4>المرحلة 2: Premium</h4><ul><li>دردشة مجهولة ثنائية الاتجاه</li><li>SMS كبديل احتياطي</li><li>اتصال مقنّع</li><li>3 جهات اتصال وتصعيد متعدد المستويات</li><li>Apple Wallet وGoogle Wallet</li><li>ملصق NFC</li><li>مساعد دعم ذكي ودعم عبر WhatsApp</li><li>مصنّف إساءة ذكي</li><li>ترقية من Plus إلى Premium مع احتساب نسبي</li></ul></div>
+    <div class="card"><h4>المرحلة 3: Business</h4><ul><li>إنشاء مؤسسة ودعوة أعضاء بالأدوار</li><li>تعيين سائق لكل سيارة مع جدول مناوبة</li><li>فوترة B2B (رقم USt-IdNr، فاتورة، SEPA)</li><li>API وWebhooks</li><li>تقارير وتصدير CSV</li><li>بوابة شركاء لإدارات العقارات والوكلاء</li><li>ملصقات مطبوعة مسبقًا بالجملة</li></ul></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <h2><span class="n">11</span>الباقات والأسعار</h2>
+  <p class="lead">كل الباقات مدفوعة، ولا توجد باقة مجانية ولا فترة تجربة. أسعار المستهلك شاملة 19% ضريبة (inkl. MwSt.)، وباقة Business تُعرض صافية للشركات. الدفع السنوي هو الخيار الافتراضي في صفحة الدفع، لأن رسوم الدفع الشهري تأكل جزءًا كبيرًا من الهامش.</p>
+
+  <div class="plans">
+    <div class="plan">
+      <p class="pname">Plus</p>
+      <p class="price">29 € <small>/ سنة</small></p>
+      <p class="alt">أو 2.99 € شهريًا (35.88 € سنويًا). التوفير مع السنوي: 19%.</p>
+      <p class="who">للسائق الفرد. متاحة عند الإطلاق.</p>
+      <ul>
+        <li>حتى <strong>سيارتين</strong></li>
+        <li>ملصق فينيل مقاوم للأشعة فوق البنفسجية مشمول لكل سيارة سنويًا، مع الشحن</li>
+        <li>Web Push + البريد + <strong>WhatsApp</strong> (حتى 30 رسالة شهريًا)</li>
+        <li>زر „Ich komme“ مع حالة لحظية للماسح</li>
+        <li>تصعيد لـ <strong>جهة اتصال احتياطية واحدة</strong></li>
+        <li>7 أنواع تنبيه ورسالة حرة مفلترة</li>
+        <li>ساعات هدوء</li>
+        <li>مساعد الركن (مؤقت وموقع)</li>
+        <li>سجل التنبيهات 90 يومًا، وزر الإبلاغ عن إساءة</li>
+        <li>دعم بالبريد خلال 48 ساعة</li>
+      </ul>
+    </div>
+    <div class="plan featured">
+      <p class="pname">Premium</p>
+      <p class="price">59 € <small>/ سنة</small></p>
+      <p class="alt">أو 5.99 € شهريًا (71.88 € سنويًا). التوفير مع السنوي: 18%.</p>
+      <p class="who">للعائلات ولمن يُسد مخرجه كثيرًا. من المرحلة 2.</p>
+      <ul>
+        <li>كل ما في Plus، و:</li>
+        <li>حتى <strong>5 سيارات</strong></li>
+        <li>3 ملصقات مشمولة سنويًا، منها ملصق <strong>NFC</strong></li>
+        <li>WhatsApp حتى 100 رسالة شهريًا و<strong>SMS احتياطي</strong> حتى 15 شهريًا</li>
+        <li><strong>اتصال مقنّع</strong> حتى 20 دقيقة شهريًا</li>
+        <li><strong>دردشة مجهولة</strong> ثنائية الاتجاه مع الماسح</li>
+        <li>تصعيد متعدد المستويات حتى <strong>3 جهات اتصال</strong></li>
+        <li>Apple Wallet وGoogle Wallet</li>
+        <li>دعم أولوية خلال 24 ساعة، مع WhatsApp</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <p class="pname">Business</p>
+      <p class="price">39 € <small>/ سيارة / سنة + MwSt.</small></p>
+      <p class="alt">حد أدنى 5 سيارات. 33 € من 50 سيارة، و29 € من 250 سيارة. فاتورة سنوية.</p>
+      <p class="who">للأساطيل والحرفيين وشركات التوصيل والتأجير. من المرحلة 3.</p>
+      <ul>
+        <li>كل ما في Premium لكل سيارة، و:</li>
+        <li>لوحة أسطول مع أدوار (owner وmanager وdriver)</li>
+        <li><strong>توجيه التنبيه للسائق المناوب</strong></li>
+        <li>WhatsApp حتى 50 رسالة وSMS حتى 10 رسائل لكل سيارة شهريًا (مجمّعة على مستوى الشركة)</li>
+        <li>حتى 5 جهات تصعيد</li>
+        <li>API وWebhooks وتصدير CSV وتقارير شهرية</li>
+        <li>فاتورة وSEPA وعقد معالجة بيانات (AVV) للشركة</li>
+        <li>تهيئة شخصية واتفاقية مستوى خدمة 99.9%</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>11.1 إضافات مدفوعة (لكل الباقات)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>الإضافة</th><th class="num">السعر</th><th>ملاحظة</th></tr></thead>
+    <tbody>
+      <tr><td>ملصق إضافي أو بديل (فينيل UV)</td><td class="num">6.90 €</td><td>شامل الشحن، والتكلفة علينا حوالي 2.60 €</td></tr>
+      <tr><td>ملصق NFC</td><td class="num">9.90 €</td><td>التكلفة علينا حوالي 3.80 €</td></tr>
+      <tr><td>بطاقة A6 للوحة القيادة (مغلّفة)</td><td class="num">4.90 €</td><td>للسيارات المستأجرة أو المشتركة</td></tr>
+      <tr><td>سيارة إضافية فوق حد الباقة</td><td class="num">12 € / سنة</td><td>Plus وPremium</td></tr>
+      <tr><td>حزمة 25 رسالة SMS</td><td class="num">4.90 €</td><td>تُستخدم عند تجاوز الحد</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>11.2 لماذا هذه الأسعار</h3>
+  <ul>
+    <li><strong>29 € في السنة أقل من ثمن مخالفة واحدة</strong> (غرامات الركن في ألمانيا بين 10 و55 €، والسحب يكلف 150 إلى 300 €). من السهل إقناع العميل بأن الاشتراك يستحق.</li>
+    <li>السعر قريب مما يدفعه الألمان لخدمات سيارات مشابهة. هو أقل بكثير من عضوية نادي سيارات، وأعلى من تطبيق بسيط لأنه يشمل ملصقًا مطبوعًا ورسائل WhatsApp.</li>
+    <li>الفرق بين Plus وPremium واضح (SMS، اتصال، دردشة، عائلة)، فيسهل على العميل الترقية.</li>
+    <li>سعر Business لكل سيارة يتوسع مع حجم العميل، وهامشه أعلى بسبب انخفاض تكلفة الدعم لكل سيارة.</li>
+  </ul>
+
+  <h3>11.3 اقتصاديات الوحدة لكل باقة (سنويًا، باليورو)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>البند</th><th class="num">Plus</th><th class="num">Premium</th><th class="num">Business (لكل سيارة)</th></tr></thead>
+    <tbody>
+      <tr><td>السعر المدفوع</td><td class="num">29.00</td><td class="num">59.00</td><td class="num">39.00 صافي</td></tr>
+      <tr><td>الإيراد الصافي (بعد 19% ضريبة)</td><td class="num">24.37</td><td class="num">49.58</td><td class="num">39.00</td></tr>
+      <tr><td>الملصقات والتغليف والشحن</td><td class="num">−2.60</td><td class="num">−5.50</td><td class="num">−2.40</td></tr>
+      <tr><td>رسوم الدفع (Stripe، سنوي)</td><td class="num">−0.69</td><td class="num">−1.14</td><td class="num">−0.35 (SEPA)</td></tr>
+      <tr><td>WhatsApp (متوسط 1.4 سيارة × 12 تنبيه × 0.055)</td><td class="num">−0.92</td><td class="num">−1.50</td><td class="num">−1.30</td></tr>
+      <tr><td>SMS واتصال مقنّع (متوسط استخدام)</td><td class="num">0.00</td><td class="num">−3.20</td><td class="num">−1.80</td></tr>
+      <tr><td>نصيب البنية التحتية</td><td class="num">−0.60</td><td class="num">−1.00</td><td class="num">−0.80</td></tr>
+      <tr><td>نصيب الدعم الفني</td><td class="num">−1.50</td><td class="num">−3.00</td><td class="num">−4.00</td></tr>
+      <tr><td>مخصص التراجع والاسترداد (2%)</td><td class="num">−0.49</td><td class="num">−0.99</td><td class="num">−0.78</td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td>هامش المساهمة</td><td class="num">17.57 (72%)</td><td class="num">33.25 (67%)</td><td class="num">27.57 (71%)</td></tr>
+    </tfoot>
+  </table></div>
+  <div class="note"><p><strong>الاشتراك الشهري:</strong> رسوم Stripe تُدفع 12 مرة (حوالي 0.30 € في كل عملية)، فتصبح حوالي 3.60 € في السنة بدل 0.69 €. لذلك سعر الشهري أعلى بنسبة 19%. الأسعار المتغيرة (WhatsApp وSMS وStripe) تقديرية وتُحدَّث من قوائم الأسعار الرسمية في المرحلة 0.</p></div>
+</section>
+
+<section id="costs">
+  <h2><span class="n">12</span>تقدير التكلفة</h2>
+  <p class="lead">كل الأرقام باليورو، دون ضريبة القيمة المضافة (الشركة تستردها). أسعار المزودين مبنية على قوائمهم المعروفة وقت الكتابة، ويجب تأكيدها بعروض أسعار فعلية في المرحلة 0. احتياطي الطوارئ (15%) مضاف لبنود التأسيس.</p>
+
+  <h3>12.1 تكلفة التطوير (لمرة واحدة) حسب الوحدة، للمرحلة 1 (MVP)</h3>
+  <p>سيناريوهان: <strong>A</strong> فريق Nearshore أو Freelancers بمتوسط 45 € للساعة، و<strong>B</strong> وكالة ألمانية بمتوسط 95 € للساعة.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>الوحدة</th><th class="num">ساعات</th><th class="num">سيناريو A</th><th class="num">سيناريو B</th></tr></thead>
+    <tbody>
+      <tr><td>الاستكشاف، وبحث UX، وتصميم الواجهات ونظام التصميم (ألماني/إنجليزي)</td><td class="num">160</td><td class="num">7,200</td><td class="num">15,200</td></tr>
+      <tr><td>المعمارية، والبنية التحتية، وIaC، وCI/CD، والمراقبة، والنسخ الاحتياطية</td><td class="num">110</td><td class="num">4,950</td><td class="num">10,450</td></tr>
+      <tr><td>الحساب (Magic link وPasskeys)، والإعدادات، والترجمة</td><td class="num">90</td><td class="num">4,050</td><td class="num">8,550</td></tr>
+      <tr><td>السيارات، وخدمة الرموز، ومصمم الملصقات، وملفات الطباعة</td><td class="num">110</td><td class="num">4,950</td><td class="num">10,450</td></tr>
+      <tr><td>تطبيق الماسح (PWA)، والحالة اللحظية، وCaptcha، وإمكانية الوصول</td><td class="num">120</td><td class="num">5,400</td><td class="num">11,400</td></tr>
+      <tr><td>محرك الإشعارات (Push، البريد، WhatsApp، القوالب، التتبع، ساعات الهدوء)</td><td class="num">150</td><td class="num">6,750</td><td class="num">14,250</td></tr>
+      <tr><td>التأكيد والتصعيد وموافقة جهة الاتصال</td><td class="num">90</td><td class="num">4,050</td><td class="num">8,550</td></tr>
+      <tr><td>مكافحة الإساءة (حدود المعدل، الفلتر، الحظر، البلاغات)</td><td class="num">70</td><td class="num">3,150</td><td class="num">6,650</td></tr>
+      <tr><td>الفوترة (Stripe Billing وTax، الإلغاء، التراجع، التحصيل)</td><td class="num">110</td><td class="num">4,950</td><td class="num">10,450</td></tr>
+      <tr><td>طلب الملصقات والربط مع المطبعة والشحن</td><td class="num">70</td><td class="num">3,150</td><td class="num">6,650</td></tr>
+      <tr><td>مساعد الركن</td><td class="num">60</td><td class="num">2,700</td><td class="num">5,700</td></tr>
+      <tr><td>ميزات GDPR (الموافقات، التصدير، الحذف، الاحتفاظ، سجل التدقيق)</td><td class="num">80</td><td class="num">3,600</td><td class="num">7,600</td></tr>
+      <tr><td>لوحة الإدارة</td><td class="num">130</td><td class="num">5,850</td><td class="num">12,350</td></tr>
+      <tr><td>الدعم (مركز المساعدة، الربط مع Zammad)</td><td class="num">40</td><td class="num">1,800</td><td class="num">3,800</td></tr>
+      <tr><td>موقع الهبوط وSEO والصفحات القانونية</td><td class="num">60</td><td class="num">2,700</td><td class="num">5,700</td></tr>
+      <tr><td>ضمان الجودة (خطط الاختبار، E2E، اختبار الحمل، تدقيق إمكانية الوصول)</td><td class="num">180</td><td class="num">8,100</td><td class="num">17,100</td></tr>
+      <tr><td>إدارة المشروع والمنتج</td><td class="num">150</td><td class="num">6,750</td><td class="num">14,250</td></tr>
+    </tbody>
+    <tfoot><tr><td>مجموع المرحلة 1 (MVP)</td><td class="num">1,780</td><td class="num">80,100</td><td class="num">169,100</td></tr></tfoot>
+  </table></div>
+
+  <div class="tbl"><table>
+    <thead><tr><th>المرحلة</th><th class="num">ساعات</th><th class="num">سيناريو A</th><th class="num">سيناريو B</th></tr></thead>
+    <tbody>
+      <tr><td>المرحلة 1: MVP مع باقة Plus</td><td class="num">1,780</td><td class="num">80,100</td><td class="num">169,100</td></tr>
+      <tr><td>المرحلة 2: Premium (دردشة، SMS، اتصال، تصعيد متعدد، Wallet، NFC، مساعد ذكي)</td><td class="num">950</td><td class="num">42,750</td><td class="num">90,250</td></tr>
+      <tr><td>المرحلة 3: Business (مؤسسات، أدوار، مناوبات، API، فوترة B2B، بوابة شركاء)</td><td class="num">1,050</td><td class="num">47,250</td><td class="num">99,750</td></tr>
+    </tbody>
+    <tfoot><tr><td>مجموع التطوير حتى نهاية المرحلة 3</td><td class="num">3,780</td><td class="num">170,100</td><td class="num">359,100</td></tr></tfoot>
+  </table></div>
+
+  <h3>12.2 تكاليف التأسيس غير التقنية (لمرة واحدة، قبل الإطلاق)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>البند</th><th class="num">التكلفة</th><th>ملاحظة</th></tr></thead>
+    <tbody>
+      <tr><td>تأسيس GmbH (كاتب العدل والسجل التجاري)</td><td class="num">1,000</td><td>رأس المال 25,000 € (يُدفع نصفه عند التأسيس) ليس تكلفة. البديل UG برأس مال أقل.</td></tr>
+      <tr><td>العلامة التجارية: DPMA (‏290) + EUIPO لثلاث فئات (‏1,050) + بحث تشابه</td><td class="num">2,140</td><td>الفئات 9 و38 و42</td></tr>
+      <tr><td>محامٍ: AGB، وسياسة الخصوصية، وعقود المعالجة، وDPIA، وشروط الشركاء</td><td class="num">6,000</td><td>محامٍ متخصص في IT-Recht</td></tr>
+      <tr><td>إعداد مسؤول حماية البيانات الخارجي (VVT وTOMs)</td><td class="num">1,000</td><td></td></tr>
+      <tr><td>اختبار اختراق قبل الإطلاق</td><td class="num">7,000</td><td>نطاق: الويب والـ API والبنية</td></tr>
+      <tr><td>تدقيق إمكانية الوصول</td><td class="num">2,000</td><td>BFSG</td></tr>
+      <tr><td>الهوية البصرية (شعار، ألوان، قوالب الملصقات)</td><td class="num">3,000</td><td></td></tr>
+      <tr><td>مخزون أولي وعينات طباعة وتغليف</td><td class="num">2,000</td><td>500 ملصق مسبق الطباعة للشركاء</td></tr>
+      <tr><td>توثيق Meta Business وإعداد WhatsApp وتسجيل LUCID</td><td class="num">300</td><td></td></tr>
+      <tr><td>احتياطي 15%</td><td class="num">3,666</td><td></td></tr>
+    </tbody>
+    <tfoot><tr><td>المجموع</td><td class="num">28,106</td><td></td></tr></tfoot>
+  </table></div>
+
+  <h3>12.3 الاستثمار الإجمالي حتى الإطلاق</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>البند</th><th class="num">سيناريو A</th><th class="num">سيناريو B</th></tr></thead>
+    <tbody>
+      <tr><td>تطوير المرحلة 1</td><td class="num">80,100</td><td class="num">169,100</td></tr>
+      <tr><td>تكاليف التأسيس غير التقنية</td><td class="num">28,106</td><td class="num">28,106</td></tr>
+      <tr><td>تشغيل أثناء البناء (6 أشهر × حوالي 1,000 €: بنية، أدوات، محاسب، DSB)</td><td class="num">6,000</td><td class="num">6,000</td></tr>
+      <tr><td>تسويق الإطلاق (أول 3 أشهر: PR، إعلانات، مواد للشركاء)</td><td class="num">15,000</td><td class="num">15,000</td></tr>
+    </tbody>
+    <tfoot><tr><td>المجموع حتى الإطلاق (يوليو 2027)</td><td class="num">129,206</td><td class="num">218,206</td></tr></tfoot>
+  </table></div>
+
+  <h3>12.4 التكلفة الشهرية الثابتة بعد الإطلاق</h3>
+  <p>ثلاث مراحل نمو. تكلفة الرسائل والملصقات والدفع متغيرة لكل عميل، وهي محسوبة في اقتصاديات الوحدة (11.3)، فلا تظهر هنا. رواتب المؤسسين غير محسوبة.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>البند</th><th class="num">إطلاق<br><small>حتى 2,000 عميل</small></th><th class="num">نمو<br><small>حتى 20,000</small></th><th class="num">توسع<br><small>حتى 100,000</small></th></tr></thead>
+    <tbody>
+      <tr><td colspan="4"><strong>البنية التحتية (Hetzner)</strong></td></tr>
+      <tr><td>خوادم التطبيق والـ Worker</td><td class="num">32</td><td class="num">120</td><td class="num">480</td></tr>
+      <tr><td>PostgreSQL أساسي + نسخة متماثلة</td><td class="num">46</td><td class="num">120</td><td class="num">380</td></tr>
+      <tr><td>Valkey، والمراقبة، وZammad</td><td class="num">27</td><td class="num">56</td><td class="num">150</td></tr>
+      <tr><td>Load Balancer، وتخزين الكائنات، والنسخ الاحتياطية، والأقراص</td><td class="num">26</td><td class="num">64</td><td class="num">190</td></tr>
+      <tr><td colspan="4"><strong>خدمات وأدوات</strong></td></tr>
+      <tr><td>Sentry وBetter Stack وPlausible</td><td class="num">60</td><td class="num">150</td><td class="num">450</td></tr>
+      <tr><td>Brevo (البريد) وFriendly Captcha</td><td class="num">64</td><td class="num">190</td><td class="num">600</td></tr>
+      <tr><td>رسوم ثابتة لمزود WhatsApp (BSP)</td><td class="num">49</td><td class="num">99</td><td class="num">300</td></tr>
+      <tr><td>GitHub وFigma وGoogle Workspace و1Password وApple Developer</td><td class="num">118</td><td class="num">260</td><td class="num">450</td></tr>
+      <tr><td colspan="4"><strong>الامتثال والإدارة</strong></td></tr>
+      <tr><td>مسؤول حماية البيانات الخارجي</td><td class="num">250</td><td class="num">400</td><td class="num">800</td></tr>
+      <tr><td>محاسب ضرائب (Steuerberater)</td><td class="num">450</td><td class="num">800</td><td class="num">1,500</td></tr>
+      <tr><td>تأمين (Cyber وVermögensschaden) وبنك وIHK ونصوص قانونية</td><td class="num">135</td><td class="num">200</td><td class="num">700</td></tr>
+      <tr><td colspan="4"><strong>الفريق والتسويق</strong></td></tr>
+      <tr><td>تطوير وصيانة (A: ‏80 ساعة ← 1.5 FTE ← 4 FTE)</td><td class="num">3,600</td><td class="num">10,000</td><td class="num">28,000</td></tr>
+      <tr><td>دعم العملاء (طالب عامل 20 ساعة أسبوعيًا ← 2 FTE ← 5 FTE)</td><td class="num">1,700</td><td class="num">7,000</td><td class="num">18,000</td></tr>
+      <tr><td>التسويق والشراكات</td><td class="num">3,000</td><td class="num">12,000</td><td class="num">40,000</td></tr>
+    </tbody>
+    <tfoot><tr><td>المجموع الشهري الثابت</td><td class="num">9,557</td><td class="num">31,459</td><td class="num">92,000</td></tr></tfoot>
+  </table></div>
+
+  <h3>12.5 التكاليف المتغيرة لكل رسالة (للتسعير والمراقبة)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>القناة</th><th class="num">التكلفة التقريبية</th><th>ملاحظة</th></tr></thead>
+    <tbody>
+      <tr><td>Web Push</td><td class="num">0.00 €</td><td>VAPID، بلا مزود</td></tr>
+      <tr><td>البريد (Brevo)</td><td class="num">≈ 0.0006 €</td><td>ضمن الاشتراك الشهري</td></tr>
+      <tr><td>WhatsApp (قالب Utility، ألمانيا)</td><td class="num">≈ 0.055 €</td><td>تسعير Meta لكل رسالة، بالإضافة لرسوم BSP الثابتة</td></tr>
+      <tr><td>SMS ألمانيا (seven.io أو Twilio)</td><td class="num">0.075–0.09 €</td><td>المرحلة 2</td></tr>
+      <tr><td>اتصال مقنّع</td><td class="num">≈ 0.02–0.04 € / دقيقة</td><td>بالإضافة لحوالي 1 € شهريًا لكل رقم في مجموعة الأرقام</td></tr>
+      <tr><td>ملصق فينيل UV مع التغليف والشحن (Kompaktbrief)</td><td class="num">≈ 2.40–2.60 €</td><td>الطباعة 0.90–1.10 € بالكمية، والطابع 1.10 €، والتغليف 0.20–0.40 €</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>12.6 نقطة التعادل وتوقعات الإيراد</h3>
+  <div class="grid2">
+    <div class="card"><h4>نقطة التعادل</h4>
+      <ul>
+        <li><strong>مرحلة الإطلاق:</strong> ‏9,557 € × 12 = ‏114,684 € سنويًا. مقسومة على 17.57 € (هامش Plus) تعطي حوالي <strong>6,530 عميل Plus</strong>.</li>
+        <li><strong>مرحلة النمو</strong> (مزيج: 60% Plus، و30% Premium، و10% حسابات Business بمتوسط 8 سيارات): الهامش المتوسط حوالي 42.6 € لكل عميل، ونقطة التعادل حوالي <strong>8,900 عميل</strong>.</li>
+        <li><strong>مرحلة التوسع:</strong> حوالي <strong>25,900 عميل</strong>. فوق ذلك يتحول كل عميل جديد لربح شبه صافٍ.</li>
+      </ul></div>
+    <div class="card"><h4>الإيراد السنوي المتكرر الصافي (سيناريو أساسي)</h4>
+      <div class="tbl" style="margin:0"><table>
+        <thead><tr><th>نهاية</th><th>العملاء</th><th class="num">ARR صافي</th></tr></thead>
+        <tbody>
+          <tr><td>2027</td><td>5,000 Plus + 500 Premium</td><td class="num">≈ 147k €</td></tr>
+          <tr><td>2028</td><td>18,000 Plus + 6,000 Premium + 150 شركة (1,800 سيارة)</td><td class="num">≈ 806k €</td></tr>
+          <tr><td>2029</td><td>40,000 Plus + 15,000 Premium + 600 شركة (9,000 سيارة)</td><td class="num">≈ 2.05M €</td></tr>
+        </tbody>
+      </table></div></div>
+  </div>
+  <div class="note"><p><strong>التمويل المطلوب (سيناريو A):</strong> حوالي 130 ألف € حتى الإطلاق، يُضاف لها حوالي 60 إلى 80 ألف € لتغطية الخسائر التشغيلية حتى نقطة التعادل (المتوقعة في الربع الثالث أو الرابع من 2028). المجموع حوالي <strong>190 إلى 210 ألف €</strong>. مصادر ممكنة: KfW ERP-Gründerkredit StartGeld (حتى 125 ألف €)، وبرامج البنوك الإقليمية (مثل NRW.BANK أو L-Bank)، وEXIST إذا كان هناك ارتباط بجامعة، ومستثمرون ملائكيون (Business Angels).</p></div>
+</section>
+
+<section id="execution">
+  <h2><span class="n">13</span>خطة التنفيذ العملية</h2>
+  <p class="lead">هذا القسم يشرح كيف يتحول المشروع من ورق إلى منتج: من تحتاج، وكيف تتعاقد، وكيف يعمل الفريق، وماذا يحدث أسبوعًا بأسبوع.</p>
+
+  <h3>13.1 الفريق</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>الدور</th><th>التفرغ</th><th>المسؤولية</th><th>كيف تجده</th></tr></thead>
+    <tbody>
+      <tr><td>صاحب المنتج (Product Owner)</td><td>100%</td><td>الأولويات، وقبول القصص، والشركاء، والقانون، والميزانية</td><td>أنت أو شريك مؤسس</td></tr>
+      <tr><td>قائد تقني (Backend، خبير)</td><td>100%</td><td>المعمارية، وNestJS، وقاعدة البيانات، والأمن، ومراجعة الكود</td><td>Malt أو Toptal أو وكالة Nearshore. مقابلة تقنية ومهمة مدفوعة صغيرة.</td></tr>
+      <tr><td>مطور Full-stack (Next.js)</td><td>100%</td><td>صفحة الماسح، والبوابة، ولوحة الإدارة</td><td>نفس المصادر</td></tr>
+      <tr><td>مصمم UI/UX</td><td>50% (أشهر 1–3)، ثم 20%</td><td>البحث، والنماذج، ونظام التصميم، والملصقات</td><td>Freelancer، مع خبرة في إمكانية الوصول</td></tr>
+      <tr><td>مختبر جودة (QA)</td><td>50%</td><td>خطط الاختبار، وPlaywright، واختبار الأجهزة</td><td>Freelancer</td></tr>
+      <tr><td>DevOps</td><td>20%</td><td>Terraform وAnsible والمراقبة والنسخ الاحتياطية</td><td>غالبًا القائد التقني، أو Freelancer بساعات محددة</td></tr>
+      <tr><td>خارجيون</td><td>حسب الحاجة</td><td>محامٍ، وDSB، ومحاسب، ومختبر اختراق، ومطبعة</td><td>توصيات IHK والشبكات المحلية</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>13.2 التعاقد مع فريق التطوير</h3>
+  <ul>
+    <li><strong>نموذج العقد:</strong> Time &amp; Material مع سقف لكل مرحلة، ودفع كل Sprint بعد العرض (Demo). هذا أفضل من السعر الثابت لمنتج جديد تتغير تفاصيله.</li>
+    <li><strong>ملكية الكود:</strong> المستودع في حساب GitHub الخاص بشركتك من اليوم الأول. نقل كامل لحقوق الملكية الفكرية (Nutzungsrechte) مذكور في العقد.</li>
+    <li><strong>الأمان:</strong> عقد معالجة بيانات (AVV) مع الوكالة. لا وصول للإنتاج إلا للقائد التقني. المفاتيح ملكك.</li>
+    <li><strong>الجودة:</strong> "تعريف الإنجاز" (13.4) ملحق بالعقد، ولا تُدفع قصة لا تحققه.</li>
+    <li><strong>الخروج:</strong> بند تسليم المعرفة (توثيق وRunbooks وجلسات تسليم) بإشعار 30 يومًا.</li>
+  </ul>
+
+  <h3>13.3 طريقة العمل</h3>
+  <div class="grid2">
+    <div class="card"><h4>إيقاع Scrum (Sprint = أسبوعان)</h4>
+      <ul><li>تخطيط الـ Sprint يوم الاثنين (ساعتان)</li><li>اجتماع يومي 15 دقيقة</li><li>العرض للـ PO يوم الجمعة الثانية: كل قصة تُعرض على Staging</li><li>مراجعة ذاتية للفريق (Retro) 45 دقيقة</li><li>تحضير الـ Backlog منتصف الـ Sprint</li></ul></div>
+    <div class="card"><h4>الأدوات</h4>
+      <ul><li>Linear أو Jira للمهام</li><li>GitHub: الكود وPull Requests وActions</li><li>Figma للتصميم</li><li>Slack أو Discord للتواصل</li><li>Notion أو المجلد <code>docs/</code> للتوثيق وسجل القرارات التقنية (ADRs)</li></ul></div>
+  </div>
+
+  <h3>13.4 معايير الهندسة وتعريف الإنجاز (Definition of Done)</h3>
+  <ul>
+    <li>الكود في Pull Request صغير، راجعه شخص آخر، وCI أخضر (Lint وTypecheck وUnit وE2E للمسارات المتأثرة).</li>
+    <li>تغطية اختبارات 80% أو أكثر لوحدات المنطق الأساسي (scan، alerts، escalation، billing، gdpr).</li>
+    <li>اختبارات E2E للمسارات الحرجة: الشراء، والتفعيل، والمسح، والتأكيد، والتصعيد، والإلغاء، وحذف الحساب.</li>
+    <li>النصوص بالألمانية والإنجليزية، وتدقيق axe دون أخطاء، ودعم الوضع الداكن.</li>
+    <li>ترحيلات قاعدة البيانات متوافقة مع الإصدار السابق: إضافة أولًا ثم حذف في إصدار لاحق.</li>
+    <li>لا بيانات شخصية في السجلات (Logs). مراقبة جديدة إن احتاجت الميزة.</li>
+    <li>منشورة على Staging، ويقبلها الـ PO.</li>
+  </ul>
+
+  <h3>13.5 البيئات والنشر</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>البيئة</th><th>الغرض</th><th>البيانات</th><th>النشر</th></tr></thead>
+    <tbody>
+      <tr><td>محلية</td><td>التطوير</td><td>بيانات وهمية (Seed)</td><td>Docker Compose: ‏Postgres وValkey وMailpit</td></tr>
+      <tr><td>Preview</td><td>مراجعة كل Pull Request</td><td>وهمية</td><td>تلقائي لكل PR (الواجهة)</td></tr>
+      <tr><td>Staging</td><td>العرض والاختبار</td><td>وهمية، ومزودون في وضع Sandbox</td><td>تلقائي عند الدمج في main</td></tr>
+      <tr><td>Production</td><td>العملاء</td><td>حقيقية</td><td>يدويًا بضغطة (Tag)، أسبوعيًا، مع Feature flags وإمكانية التراجع خلال دقائق</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>13.6 المرحلة 0: أسبوعًا بأسبوع (1 ديسمبر 2026 إلى 29 يناير 2027)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>الأسبوع</th><th>المهام</th><th>المخرجات</th></tr></thead>
+    <tbody>
+      <tr><td>1 (‏1–4 ديسمبر)</td><td>اختيار الشكل القانوني، وموعد كاتب العدل، وفتح حساب بنكي تجاري. بحث تشابه للعلامة. حجز النطاقات (parkshield.de، وpkshd.de للروابط القصيرة).</td><td>موعد التأسيس، والنطاقات</td></tr>
+      <tr><td>2</td><td>تقديم طلب العلامة لدى DPMA وEUIPO. التواصل مع 3 محامين ومسؤولي حماية بيانات وطلب عروض. فتح Meta Business Manager وبدء التوثيق.</td><td>طلبات العلامة، وعروض أسعار</td></tr>
+      <tr><td>3</td><td>صفحة هبوط مع قائمة انتظار (Double Opt-in) واستبيان قصير عن السعر. بدء 20 مقابلة مع سائقين.</td><td>صفحة منشورة</td></tr>
+      <tr><td>4 (عطلة الأعياد)</td><td>إعلانات صغيرة (500 €) في كولونيا وبرلين لقياس الاهتمام. كتابة وصف المهام وطلبات المطورين.</td><td>بيانات أولية</td></tr>
+      <tr><td>5 (‏4–8 يناير)</td><td>ورشة DPIA مع الـ DSB. الاتفاق على جدول الاحتفاظ وتصميم الموافقات. مقابلات تقنية للمرشحين.</td><td>مسودة DPIA</td></tr>
+      <tr><td>6</td><td>نماذج تصميم أولية (Figma) لصفحة الماسح والإعداد، واختبارها مع 8 أشخاص (منهم 3 فوق 60 سنة). عينات طباعة من مطبعتين (اختبار مقاومة UV والحرارة).</td><td>نتائج اختبار المستخدم، واختيار المطبعة</td></tr>
+      <tr><td>7</td><td>توقيع عقود الفريق والمحامي والـ DSB. تقديم قوالب WhatsApp لموافقة Meta. فتح حساب Stripe والتحقق منه. تسجيل LUCID.</td><td>عقود موقعة، وقوالب قيد المراجعة</td></tr>
+      <tr><td>8 (‏25–29 يناير)</td><td>بوابة القرار 0 (القسم 14.2). تجهيز الـ Backlog للـ Sprint الأول. إعداد GitHub والأدوات.</td><td>قرار الانطلاق</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>13.7 المرحلة 1: خطة الـ Sprints (فبراير إلى يونيو 2027)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Sprint</th><th>التواريخ</th><th>القصص</th><th>هدف العرض</th></tr></thead>
+    <tbody>
+      <tr><td>S1</td><td>1–12 فبراير</td><td>US-01، US-02، US-03</td><td>تطبيق فارغ منشور على Staging بمراقبة ونسخ احتياطي</td></tr>
+      <tr><td>S2</td><td>15–26 فبراير</td><td>US-04 إلى US-07</td><td>زائر يسجّل ويدفع Plus في Stripe Sandbox، ويلغي</td></tr>
+      <tr><td>S3</td><td>1–12 مارس</td><td>US-08 إلى US-11</td><td>يضيف سيارة ويصمم ملصقًا ويطلبه، فيصل الطلب للمطبعة (Sandbox)</td></tr>
+      <tr><td>S4</td><td>15–26 مارس</td><td>US-12 إلى US-15</td><td>ماسح يرسل تنبيهًا من هاتف حقيقي، والفلتر يعمل</td></tr>
+      <tr><td>S5</td><td>29 مارس – 9 أبريل</td><td>US-16 إلى US-19</td><td>Push وWhatsApp يصلان، والماسح يرى الحالة</td></tr>
+      <tr><td>S6</td><td>12–23 أبريل</td><td>US-20 إلى US-23</td><td>"Ich komme" والتصعيد من البداية للنهاية، مع اختبار إيقاف Valkey</td></tr>
+      <tr><td>S7</td><td>26 أبريل – 7 مايو</td><td>US-24 إلى US-28</td><td>ساعات الهدوء، والحدود، والسجل، والتصدير والحذف</td></tr>
+      <tr><td>S8</td><td>10–21 مايو</td><td>US-29 إلى US-33</td><td>مساعد الركن، ولوحة الإدارة، والمؤشرات، ومركز المساعدة</td></tr>
+      <tr><td>Hardening</td><td>24 مايو – 4 يونيو</td><td>US-34</td><td>اختبار الاختراق وإصلاحاته، واختبار الحمل، وتدقيق WCAG، والـ Runbooks</td></tr>
+      <tr><td>Beta مدفوعة</td><td>7 يونيو – 2 يوليو</td><td>إصلاحات وتحسينات</td><td>300 عضو مؤسس في كولونيا وبرلين</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>13.8 برنامج الـ Beta المدفوعة</h3>
+  <ul>
+    <li><strong>العرض:</strong> "Gründungsmitglied": ‏24 € للسنة الأولى بدل 29 €، مع شارة خاصة على الملصق. مدفوع بالكامل، ولا شيء مجاني.</li>
+    <li><strong>التجنيد:</strong> قائمة الانتظار، وإدارات عقارات في كولونيا وبرلين، ومجموعات الأحياء (nebenan.de)، ومدارس القيادة.</li>
+    <li><strong>القياس:</strong> استبيان أسبوعي قصير، ومقابلة مع 20 مشاركًا، ومتابعة يومية لمؤشرات التسليم والتأكيد.</li>
+    <li><strong>قاعدة صارمة:</strong> لا ميزات جديدة أثناء الـ Beta. إصلاحات وتحسينات فقط.</li>
+  </ul>
+
+  <h3>13.9 الدخول للسوق (Go-to-Market)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>القناة</th><th>التنفيذ</th><th class="num">تكلفة الاستحواذ المستهدفة</th></tr></thead>
+    <tbody>
+      <tr><td>الملصق نفسه</td><td>كل ملصق يحمل "ParkShield Protected" ورابطًا قصيرًا، وصفحة الماسح تحتوي سطرًا: "Auch schützen? parkshield.de". هذه حلقة نمو مجانية.</td><td class="num">≈ 0 €</td></tr>
+      <tr><td>محتوى SEO بالألمانية</td><td>أدلة: "Zugeparkt – was tun?"، و"Parkscheibe Regeln"، و"Anwohnerparken beantragen" لكل مدينة.</td><td class="num">3–6 €</td></tr>
+      <tr><td>إدارات العقارات (Hausverwaltungen)</td><td>رزم ملصقات مسبقة الطباعة للسكان مع رمز خصم. حل لمشكلة المداخل المسدودة في المجمعات.</td><td class="num">5–8 €</td></tr>
+      <tr><td>الوكلاء ومدارس القيادة وشركات التأجير</td><td>عمولة 20% من السنة الأولى، وبوابة شركاء في المرحلة 3.</td><td class="num">6–10 €</td></tr>
+      <tr><td>التواصل الاجتماعي</td><td>مقاطع قصيرة لمواقف "zugeparkt" الواقعية على TikTok وInstagram وYouTube Shorts.</td><td class="num">8–15 €</td></tr>
+      <tr><td>برنامج الإحالة</td><td>خصم 5 € للطرفين.</td><td class="num">5 €</td></tr>
+      <tr><td>الصحافة المحلية</td><td>بيان صحفي عند الإطلاق: "Kölner Startup ersetzt Handynummer hinter der Windschutzscheibe".</td><td class="num">≈ 0 €</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>13.10 قائمة التحقق قبل الإطلاق</h3>
+  <div class="grid2">
+    <div class="card"><h4>قانوني</h4><ul><li>Impressum وAGB وDatenschutz وWiderruf مراجعة من المحامي</li><li>عقود المعالجة (AVV) موقعة مع كل المزودين</li><li>DPIA وVVT وTOMs موثقة</li><li>زر الإلغاء مختبر</li><li>تسجيل LUCID</li><li>العلامة مقدّمة</li></ul></div>
+    <div class="card"><h4>تقني</h4><ul><li>اختبار اختراق دون ثغرات حرجة أو عالية مفتوحة</li><li>اختبار حمل: 200 تنبيه في الثانية</li><li>تمرين استعادة ناجح</li><li>مراقبة وتنبيهات وتغطية مناوبة</li><li>صفحة حالة عامة</li><li>قوالب WhatsApp معتمدة من Meta</li></ul></div>
+    <div class="card"><h4>تشغيلي</h4><ul><li>مخزون ملصقات وعقد مع المطبعة</li><li>20 مقالًا في مركز المساعدة</li><li>ردود جاهزة للدعم بالألمانية والإنجليزية</li><li>Runbooks: فشل WhatsApp، وتوقف قاعدة البيانات، وموجة إساءة</li></ul></div>
+    <div class="card"><h4>تجاري</h4><ul><li>صفحة الأسعار نهائية</li><li>بيان صحفي</li><li>3 شركاء عقارات موقعين على الأقل</li><li>حملة إعلانات جاهزة</li></ul></div>
+  </div>
+
+  <h3>13.11 التشغيل بعد الإطلاق</h3>
+  <ul>
+    <li><strong>المناوبة:</strong> مسار الماسح والإشعارات مراقب على مدار الساعة، ويُنبَّه المناوب إذا نزلت نسبة التسليم عن 98% أو توقف الـ API.</li>
+    <li><strong>الدعم:</strong> رد خلال 48 ساعة لـ Plus و24 ساعة لـ Premium، و4 ساعات عمل لحوادث Business.</li>
+    <li><strong>الإصدارات:</strong> أسبوعية، مع Feature flags وإمكانية تراجع فوري.</li>
+    <li><strong>الأمن:</strong> تمرين استعادة شهري، ومراجعة الحزم أسبوعيًا، واختبار اختراق بعد كل مرحلة كبيرة.</li>
+    <li><strong>القياس:</strong> مراجعة مؤشرات أسبوعية مع الفريق، ومراجعة تكلفة الرسائل والهامش شهريًا.</li>
+  </ul>
+</section>
+
+<section id="roadmap">
+  <h2><span class="n">14</span>خارطة الطريق</h2>
+  <p class="lead">18 شهرًا من ديسمبر 2026 إلى مايو 2028، ثم خطة التوسع حتى 2029. لكل مرحلة بوابة قرار بأرقام محددة. لا ننتقل للمرحلة التالية دون تحقيقها.</p>
+
+  <div class="gantt" role="img" aria-label="مخطط زمني للمراحل من ديسمبر 2026 حتى مايو 2028">
+    <div class="g-inner" dir="ltr">
+      <div class="g-head"></div>
+      <div class="g-head y" style="grid-column: span 1">2026</div>
+      <div class="g-head y" style="grid-column: span 12">2027</div>
+      <div class="g-head y" style="grid-column: span 5">2028</div>
+      <div class="g-head"></div>
+      <div class="g-head">Dec</div><div class="g-head">Jan</div><div class="g-head">Feb</div><div class="g-head">Mar</div><div class="g-head">Apr</div><div class="g-head">May</div><div class="g-head">Jun</div><div class="g-head">Jul</div><div class="g-head">Aug</div><div class="g-head">Sep</div><div class="g-head">Oct</div><div class="g-head">Nov</div><div class="g-head">Dec</div><div class="g-head">Jan</div><div class="g-head">Feb</div><div class="g-head">Mar</div><div class="g-head">Apr</div><div class="g-head">May</div>
+
+      <div class="g-label" dir="rtl">المرحلة 0: التأسيس<small>قانون، علامة، تحقق، فريق</small></div>
+      <div class="g-row"><div class="g-bar p0" style="grid-column: 1 / 3">Phase 0</div></div>
+      <div class="g-label" dir="rtl">المرحلة 1: بناء الـ MVP<small>8 Sprints + Hardening</small></div>
+      <div class="g-row"><div class="g-bar" style="grid-column: 3 / 7">MVP build</div></div>
+      <div class="g-label" dir="rtl">Beta مدفوعة<small>300 عضو مؤسس</small></div>
+      <div class="g-row"><div class="g-bar beta" style="grid-column: 7 / 8">Beta</div></div>
+      <div class="g-label" dir="rtl">الإطلاق العام<small>باقة Plus</small></div>
+      <div class="g-row"><div class="g-bar ms" style="grid-column: 8 / 9" title="Launch">Live</div></div>
+      <div class="g-label" dir="rtl">المرحلة 2: Premium<small>دردشة، SMS، اتصال، Wallet</small></div>
+      <div class="g-row"><div class="g-bar p2" style="grid-column: 8 / 12">Premium</div></div>
+      <div class="g-label" dir="rtl">المرحلة 3: Business<small>أساطيل، API، شركاء</small></div>
+      <div class="g-row"><div class="g-bar p3" style="grid-column: 12 / 16">Business &amp; partners</div></div>
+      <div class="g-label" dir="rtl">المرحلة 4: التوسع<small>النمسا، ثم هولندا وبلجيكا</small></div>
+      <div class="g-row"><div class="g-bar p4" style="grid-column: 16 / 19">AT → NL/BE</div></div>
+      <div class="g-label" dir="rtl">التسويق والشراكات<small>مستمر</small></div>
+      <div class="g-row"><div class="g-bar p0" style="grid-column: 7 / 19; opacity:.55">GTM: SEO, Hausverwaltungen, referrals</div></div>
+      <div class="g-label" dir="rtl">اختبارات الاختراق<small>بعد كل مرحلة</small></div>
+      <div class="g-row"><div class="g-bar ms" style="grid-column: 7 / 8" title="Pentest">PT</div><div class="g-bar ms" style="grid-column: 11 / 12" title="Pentest">PT</div><div class="g-bar ms" style="grid-column: 15 / 16" title="Pentest">PT</div></div>
+    </div>
+  </div>
+
+  <h3>14.1 المراحل بالتفصيل</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المرحلة</th><th>المدة</th><th>الهدف</th><th>المخرجات الرئيسية</th><th class="num">الميزانية (A / B)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>0: التأسيس</strong></td><td>ديسمبر 2026 – يناير 2027</td><td>إثبات الطلب، وتأمين الأساس القانوني، وتكوين الفريق</td><td>الشركة، والعلامة، وDPIA، وقائمة انتظار، ونماذج مختبرة، والمطبعة، والعقود</td><td class="num">≈ 13k / 13k</td></tr>
+      <tr><td><strong>1: الـ MVP</strong></td><td>فبراير – يونيو 2027</td><td>منتج يمكن بيعه: باقة Plus</td><td>القصص US-01 إلى US-34، واختبار الاختراق، والـ Beta</td><td class="num">≈ 101k / 190k</td></tr>
+      <tr><td><strong>الإطلاق</strong></td><td>6 يوليو 2027</td><td>إطلاق عام في ألمانيا</td><td>حملة، وصحافة، وشركاء</td><td class="num">15k تسويق</td></tr>
+      <tr><td><strong>2: Premium</strong></td><td>يوليو – أكتوبر 2027</td><td>رفع متوسط الإيراد لكل عميل وتقوية التميز</td><td>دردشة، وSMS، واتصال مقنّع، وتصعيد متعدد، وWallet، وNFC، ومساعد دعم ذكي، وتطبيق Android عبر TWA</td><td class="num">42.75k / 90.25k</td></tr>
+      <tr><td><strong>3: Business</strong></td><td>نوفمبر 2027 – فبراير 2028</td><td>إيراد B2B ثابت وقنوات توزيع</td><td>المؤسسات والأدوار، والمناوبات، وAPI وWebhooks، وفوترة B2B، وبوابة شركاء، وملصقات بالجملة</td><td class="num">47.25k / 99.75k</td></tr>
+      <tr><td><strong>4: التوسع</strong></td><td>من مارس 2028</td><td>أسواق قريبة بنفس الإطار القانوني</td><td>النمسا (نفس اللغة وGDPR، ولوحات نمساوية)، ثم هولندا وبلجيكا (ترجمة NL وFR)</td><td class="num">≈ 30k / 60k</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>14.2 بوابات القرار (Go/No-Go)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>البوابة</th><th>الموعد</th><th>شروط الانتقال</th><th>إذا لم تتحقق</th></tr></thead>
+    <tbody>
+      <tr><td>G0: بدء البناء</td><td>29 يناير 2027</td><td>1,000 تسجيل أو أكثر في قائمة الانتظار. 30% أو أكثر يقبلون 29 € في الاستبيان. المحامي لا يرى عائقًا قانونيًا. التمويل مؤمّن لـ 12 شهرًا.</td><td>تعديل الرسالة أو السعر وإعادة الاختبار 4 أسابيع، أو تقليص النطاق</td></tr>
+      <tr><td>G1: الإطلاق العام</td><td>2 يوليو 2027</td><td>نسبة التسليم 99% أو أكثر. p95 من المسح للإشعار أقل من 5 ثوانٍ. نسبة التأكيد 60% أو أكثر. الإساءة أقل من 2% من التنبيهات. NPS لا يقل عن 40. لا ثغرات حرجة أو عالية.</td><td>تمديد الـ Beta 4 أسابيع مع التركيز على المشكلة</td></tr>
+      <tr><td>G2: بدء Premium</td><td>سبتمبر 2027</td><td>1,500 عميل أو أكثر يدفعون. Churn شهري أقل من 3%. تكلفة الاستحواذ أقل من 15 €. 25% أو أكثر من المستخدمين يطلبون ميزات Premium في الاستبيان.</td><td>تأجيل Premium والتركيز على النمو والقنوات</td></tr>
+      <tr><td>G3: بدء Business</td><td>نوفمبر 2027</td><td>15 شركة أو أكثر على قائمة انتظار B2B. 3 شركاء توزيع نشطين.</td><td>بيع Business يدويًا (Concierge) قبل البناء</td></tr>
+      <tr><td>G4: التوسع</td><td>مارس 2028</td><td>هامش مساهمة شهري موجب. ARR صافي فوق 500 ألف € (نهاية 2028).</td><td>تعميق السوق الألماني</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>14.3 المعالم الرئيسية (Milestones)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>التاريخ</th><th>المعلم</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">2026-12-11</td><td>تأسيس الشركة، وتقديم طلب العلامة</td></tr>
+      <tr><td class="mono">2027-01-29</td><td>بوابة G0، وتوقيع عقود الفريق</td></tr>
+      <tr><td class="mono">2027-02-26</td><td>أول عملية دفع في Sandbox</td></tr>
+      <tr><td class="mono">2027-03-26</td><td>أول تنبيه حقيقي من ملصق مطبوع</td></tr>
+      <tr><td class="mono">2027-04-23</td><td>التأكيد والتصعيد يعملان من البداية للنهاية</td></tr>
+      <tr><td class="mono">2027-06-04</td><td>اختبار الاختراق مُغلق، والمنتج جاهز للـ Beta</td></tr>
+      <tr><td class="mono">2027-07-06</td><td><strong>الإطلاق العام</strong> (باقة Plus)</td></tr>
+      <tr><td class="mono">2027-10-26</td><td>إطلاق Premium</td></tr>
+      <tr><td class="mono">2027-12-31</td><td>5,500 عميل يدفعون</td></tr>
+      <tr><td class="mono">2028-02-29</td><td>إطلاق Business وبوابة الشركاء</td></tr>
+      <tr><td class="mono">2028-03-15</td><td>الإطلاق في النمسا</td></tr>
+      <tr><td class="mono">2028-Q3/Q4</td><td>نقطة التعادل الشهرية، وهولندا وبلجيكا</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>14.4 ما بعد 2028 (رؤية)</h3>
+  <ul>
+    <li><strong>شراكات تأمين:</strong> ملصق ParkShield ضمن باقات تأمين السيارات، مع بلاغ أضرار مبسط من تنبيه "Schaden" بموافقة المالك.</li>
+    <li><strong>إثبات الضرر:</strong> صورة اختيارية من الماسح، مع تمويه تلقائي للوجوه واللوحات، وحذف بعد 30 يومًا ما لم يحفظها المالك.</li>
+    <li><strong>سويسرا والمملكة المتحدة:</strong> قوانين خصوصية مختلفة (revDSG وUK GDPR) وعملة مختلفة، فهي تُترك لـ 2029.</li>
+    <li><strong>تطبيقات أصلية:</strong> فقط إذا أظهرت البيانات أن قيود Web Push على iOS تؤثر على التسليم.</li>
+    <li><strong>حلول للمدن والمواقف:</strong> رموز للمواقف الخاصة والمرائب السكنية (مثل: "سيارتك تقف في مكاني").</li>
+  </ul>
+</section>
+
+<section id="kpis">
+  <h2><span class="n">15</span>مؤشرات الأداء</h2>
+  <p><strong>المؤشر الأساسي (North Star):</strong> عدد التنبيهات التي أكدها المالك شهريًا. كل تنبيه مؤكد يعني موقفًا حُل دون شرطة ولا سحب.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>المؤشر</th><th>التعريف</th><th>Beta</th><th>نهاية 2027</th><th>نهاية 2028</th></tr></thead>
+    <tbody>
+      <tr><td>العملاء الدافعون</td><td>اشتراكات active</td><td>300</td><td>5,500</td><td>24,150 حساب</td></tr>
+      <tr><td>ARR صافي</td><td>الإيراد السنوي المتكرر دون ضريبة</td><td>6k €</td><td>147k €</td><td>806k €</td></tr>
+      <tr><td>نسبة التسليم</td><td>تنبيهات وصلت بقناة واحدة على الأقل</td><td>99% أو أكثر</td><td>99.5% أو أكثر</td><td>99.7% أو أكثر</td></tr>
+      <tr><td>نسبة التأكيد</td><td>تنبيهات أكدها المالك</td><td>60% أو أكثر</td><td>65% أو أكثر</td><td>70% أو أكثر</td></tr>
+      <tr><td>متوسط زمن التأكيد</td><td>الوسيط</td><td>أقل من 4 دقائق</td><td>أقل من 3 دقائق</td><td>أقل من 3 دقائق</td></tr>
+      <tr><td>Churn سنوي</td><td>عدم التجديد</td><td>-</td><td>أقل من 25%</td><td>أقل من 20%</td></tr>
+      <tr><td>CAC</td><td>تكلفة التسويق ÷ العملاء الجدد</td><td>-</td><td>أقل من 15 €</td><td>أقل من 12 €</td></tr>
+      <tr><td>LTV/CAC</td><td>هامش 3 سنوات ÷ CAC</td><td>-</td><td>3 أو أكثر</td><td>4 أو أكثر</td></tr>
+      <tr><td>نسبة الإساءة</td><td>تنبيهات محظورة أو مُبلّغ عنها</td><td>أقل من 2%</td><td>أقل من 1.5%</td><td>أقل من 1%</td></tr>
+      <tr><td>NPS</td><td>استبيان ربع سنوي</td><td>40 أو أكثر</td><td>45 أو أكثر</td><td>50 أو أكثر</td></tr>
+      <tr><td>نسبة Premium</td><td>من عملاء الأفراد</td><td>-</td><td>10%</td><td>25%</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="risks">
+  <h2><span class="n">16</span>سجل المخاطر</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>الخطر</th><th>الاحتمال</th><th>الأثر</th><th>الحماية</th></tr></thead>
+    <tbody>
+      <tr><td>الطلب أقل من المتوقع، أو الناس لا تريد الدفع</td><td>متوسط</td><td><span class="chip c-bad">عالٍ</span></td><td>بوابة G0 قبل البناء، وBeta مدفوعة، وسعر منخفض، وقنوات شركاء</td></tr>
+      <tr><td>رفض Meta لقوالب WhatsApp أو تغيير التسعير</td><td>متوسط</td><td>متوسط</td><td>تقديم القوالب في المرحلة 0. Push والبريد يعملان دائمًا. SMS بديل. تتبع التكلفة يوميًا.</td></tr>
+      <tr><td>قيود Web Push على iOS (يتطلب إضافة الـ PWA للشاشة الرئيسية)</td><td>عالٍ</td><td>متوسط</td><td>WhatsApp مشمول في Plus، وإرشاد تفاعلي لمستخدمي iOS، وتطبيق أصلي في المستقبل إن لزم</td></tr>
+      <tr><td>موجة إساءة أو مضايقة عبر الملصقات</td><td>متوسط</td><td>عالٍ</td><td>3 حدود معدل، وCaptcha، وفلتر، وبلاغ وحظر، وإلغاء الرمز بضغطة، وRunbook</td></tr>
+      <tr><td>مخالفة GDPR أو شكوى لجهة الرقابة</td><td>منخفض</td><td><span class="chip c-bad">عالٍ</span></td><td>DPIA، وDSB، ومحامٍ، وتقليل البيانات، واحتفاظ آلي، وسجل تدقيق</td></tr>
+      <tr><td>منافس كبير (نادي سيارات أو شركة تأمين) يطلق منتجًا مماثلًا</td><td>متوسط</td><td>متوسط</td><td>السرعة، والتميز بالتصعيد، وتحويلهم لشركاء توزيع</td></tr>
+      <tr><td>تأخر التطوير أو تجاوز الميزانية</td><td>متوسط</td><td>متوسط</td><td>نطاق MVP صارم، وT&amp;M بسقف، وعروض كل Sprint، واحتياطي 15%</td></tr>
+      <tr><td>مشاكل جودة الملصق (بهتان، تقشر، صعوبة مسح)</td><td>متوسط</td><td>متوسط</td><td>اختبار عينات (UV وحرارة وغسيل)، وضمان استبدال، وQR بتصحيح أخطاء مستوى H</td></tr>
+      <tr><td>اعتماد على شخص واحد في الفريق</td><td>متوسط</td><td>عالٍ</td><td>توثيق، ومراجعة كود إلزامية، وكود ومفاتيح في حساب الشركة</td></tr>
+      <tr><td>انقطاع عند مزود (Hetzner أو Brevo أو BSP)</td><td>منخفض</td><td>عالٍ</td><td>نسخة احتياطية في موقع ثانٍ، وقنوات متعددة، وخطة نقل لـ AWS Frankfurt موثقة</td></tr>
+      <tr><td>تغيّر قانوني (تحديث TDDDG أو تفسير جديد للبصمة)</td><td>منخفض</td><td>متوسط</td><td>DSB يتابع التحديثات، والتصميم الحالي لا يعتمد على قراءة الجهاز</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="appendix">
+  <h2><span class="n">17</span>الملاحق</h2>
+
+  <h3>الملحق أ: مخطط قاعدة البيانات (PostgreSQL 16)</h3>
+  <p>تم اختباره على PostgreSQL 16: ينشئ 30 جدولًا، ودالة الاحتفاظ تعمل. الصيغة متوافقة مع dbmate. نفس الملف موجود في المستودع: <code>docs/parkshield-schema.sql</code>.</p>
+<pre>-- migrate:up
+-- =============================================================================
+-- ParkShield — PostgreSQL 16 schema (SRS v2)
+-- Conventions
+--   * All PKs are UUID v7-compatible (generated in app; gen_random_uuid() fallback).
+--   * Columns ending in _enc   = AES-256-GCM ciphertext (envelope, app-level). bytea.
+--   * Columns ending in _bidx  = HMAC-SHA256 blind index for equality lookup. bytea.
+--   * Columns ending in _hash  = SHA-256 of a secret (tokens). Never store the raw secret.
+--   * key_version              = which data-encryption key encrypted the row (rotation).
+--   * Soft delete is NOT used for personal data: GDPR erasure = hard delete / anonymise.
+-- =============================================================================
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS citext;
+
+-- ---------------------------------------------------------------------------
+-- Enums
+-- ---------------------------------------------------------------------------
+CREATE TYPE user_role          AS ENUM ('customer', 'support', 'admin', 'superadmin');
+CREATE TYPE user_status        AS ENUM ('active', 'suspended', 'pending_deletion');
+CREATE TYPE ui_lang            AS ENUM ('de', 'en');
+CREATE TYPE channel_type       AS ENUM ('webpush', 'email', 'whatsapp', 'sms', 'voice', 'telegram');
+CREATE TYPE token_status       AS ENUM ('generated', 'printed', 'shipped', 'active', 'revoked');
+CREATE TYPE consent_state      AS ENUM ('pending', 'confirmed', 'declined', 'revoked');
+CREATE TYPE alert_severity     AS ENUM ('info', 'normal', 'urgent');
+CREATE TYPE alert_status       AS ENUM ('created', 'blocked', 'dispatched', 'delivered',
+                                        'acknowledged', 'escalated', 'expired');
+CREATE TYPE delivery_status    AS ENUM ('queued', 'sent', 'delivered', 'read', 'failed', 'skipped');
+CREATE TYPE recipient_kind     AS ENUM ('owner', 'emergency_contact', 'org_member');
+CREATE TYPE moderation_state   AS ENUM ('not_required', 'passed', 'blocked', 'review');
+CREATE TYPE plan_code          AS ENUM ('plus', 'premium', 'business');
+CREATE TYPE subscription_state AS ENUM ('incomplete', 'active', 'past_due', 'canceled', 'expired');
+CREATE TYPE billing_interval   AS ENUM ('month', 'year');
+CREATE TYPE org_role           AS ENUM ('owner', 'manager', 'driver');
+CREATE TYPE decal_product      AS ENUM ('a6_dashboard_card', 'uv_vinyl_sticker', 'nfc_vinyl_sticker');
+CREATE TYPE order_status       AS ENUM ('pending_payment', 'paid', 'in_production', 'shipped',
+                                        'delivered', 'canceled', 'refunded');
+CREATE TYPE ticket_status      AS ENUM ('open', 'in_progress', 'waiting_customer', 'resolved', 'closed');
+CREATE TYPE ticket_channel     AS ENUM ('in_app', 'email', 'whatsapp', 'ai_bot');
+CREATE TYPE dsr_type           AS ENUM ('access_export', 'erasure', 'rectification', 'restriction');
+CREATE TYPE dsr_status         AS ENUM ('received', 'in_progress', 'completed', 'rejected');
+CREATE TYPE abuse_status       AS ENUM ('open', 'actioned', 'dismissed');
+CREATE TYPE chat_sender        AS ENUM ('scanner', 'owner', 'system');
+
+-- ---------------------------------------------------------------------------
+-- Identity &amp; access
+-- ---------------------------------------------------------------------------
+CREATE TABLE users (
+    id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    email              citext      NOT NULL UNIQUE,
+    email_verified_at  timestamptz,
+    display_name       varchar(80),
+    preferred_lang     ui_lang     NOT NULL DEFAULT 'de',
+    timezone           varchar(64) NOT NULL DEFAULT 'Europe/Berlin',
+    role               user_role   NOT NULL DEFAULT 'customer',
+    status             user_status NOT NULL DEFAULT 'active',
+    stripe_customer_id varchar(64) UNIQUE,
+    last_login_at      timestamptz,
+    deletion_due_at    timestamptz,               -- set when erasure requested (grace 24h)
+    created_at         timestamptz NOT NULL DEFAULT now(),
+    updated_at         timestamptz NOT NULL DEFAULT now()
+);
+
+-- Passkeys (WebAuthn). Magic-link is the fallback; no passwords are stored.
+CREATE TABLE webauthn_credentials (
+    id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id        uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    credential_id  bytea       NOT NULL UNIQUE,
+    public_key     bytea       NOT NULL,
+    sign_count     bigint      NOT NULL DEFAULT 0,
+    transports     text[],
+    label          varchar(60),
+    created_at     timestamptz NOT NULL DEFAULT now(),
+    last_used_at   timestamptz
+);
+
+CREATE TABLE magic_link_tokens (
+    id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id     uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token_hash  bytea       NOT NULL UNIQUE,
+    expires_at  timestamptz NOT NULL,             -- 15 minutes
+    used_at     timestamptz,
+    created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE sessions (
+    id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id       uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token_hash    bytea       NOT NULL UNIQUE,
+    user_agent    varchar(255),
+    expires_at    timestamptz NOT NULL,
+    revoked_at    timestamptz,
+    created_at    timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX sessions_user_idx ON sessions(user_id);
+
+-- ---------------------------------------------------------------------------
+-- Organisations (Business / Fleet plan)
+-- ---------------------------------------------------------------------------
+CREATE TABLE organizations (
+    id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name               varchar(120) NOT NULL,
+    vat_id             varchar(20),                -- USt-IdNr. for B2B invoices
+    billing_email      citext       NOT NULL,
+    stripe_customer_id varchar(64)  UNIQUE,
+    created_at         timestamptz  NOT NULL DEFAULT now(),
+    updated_at         timestamptz  NOT NULL DEFAULT now()
+);
+
+CREATE TABLE organization_members (
+    organization_id uuid     NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    user_id         uuid     NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role            org_role NOT NULL DEFAULT 'driver',
+    created_at      timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (organization_id, user_id)
+);
+
+-- ---------------------------------------------------------------------------
+-- Contact channels (where the OWNER receives alerts)
+-- ---------------------------------------------------------------------------
+CREATE TABLE contact_channels (
+    id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id        uuid         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    type           channel_type NOT NULL,
+    address_enc    bytea,                          -- phone / chat id; NULL for webpush &amp; email (email lives on users)
+    address_bidx   bytea,                          -- dedupe + inbound webhook lookup
+    key_version    smallint     NOT NULL DEFAULT 1,
+    priority       smallint     NOT NULL DEFAULT 1, -- 1 = tried first
+    verified_at    timestamptz,                     -- OTP-verified; unverified channels are never used
+    opted_in_at    timestamptz,                     -- WhatsApp/SMS explicit opt-in (Meta + UWG §7)
+    is_enabled     boolean      NOT NULL DEFAULT true,
+    created_at     timestamptz  NOT NULL DEFAULT now(),
+    UNIQUE (user_id, type, address_bidx)
+);
+CREATE INDEX contact_channels_bidx ON contact_channels(address_bidx);
+
+CREATE TABLE push_subscriptions (
+    id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id      uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    endpoint     text        NOT NULL UNIQUE,
+    p256dh       text        NOT NULL,
+    auth         text        NOT NULL,
+    device_label varchar(60),
+    created_at   timestamptz NOT NULL DEFAULT now(),
+    last_ok_at   timestamptz,
+    failed_count smallint    NOT NULL DEFAULT 0     -- auto-removed after 410 Gone / 5 failures
+);
+
+-- ---------------------------------------------------------------------------
+-- Vehicles &amp; QR tokens
+-- ---------------------------------------------------------------------------
+CREATE TABLE vehicles (
+    id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    owner_user_id    uuid REFERENCES users(id) ON DELETE CASCADE,
+    organization_id  uuid REFERENCES organizations(id) ON DELETE CASCADE,
+    nickname         varchar(60) NOT NULL,
+    plate_enc        bytea,                         -- license plate = personal data
+    plate_bidx       bytea,
+    key_version      smallint    NOT NULL DEFAULT 1,
+    make_model       varchar(80),
+    color            varchar(30),
+    created_at       timestamptz NOT NULL DEFAULT now(),
+    updated_at       timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT vehicle_has_owner CHECK (owner_user_id IS NOT NULL OR organization_id IS NOT NULL)
+);
+CREATE INDEX vehicles_owner_idx ON vehicles(owner_user_id);
+CREATE INDEX vehicles_org_idx   ON vehicles(organization_id);
+
+-- The public code printed in the QR (e.g. https://pkshd.de/s/K7QX4M2R9T) is
+-- 10 chars Crockford-Base32 = 50 bits random. Only its SHA-256 is stored, so a DB
+-- leak cannot be used to forge scans. A vehicle can have several tokens over time
+-- (rotation after leak / reprint); exactly one should be active per decal.
+CREATE TABLE qr_tokens (
+    id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    vehicle_id         uuid         REFERENCES vehicles(id) ON DELETE CASCADE,  -- NULL = pre-printed stock, not yet claimed
+    code_hash          bytea        NOT NULL UNIQUE,
+    code_hint          char(4)      NOT NULL,       -- last 4 chars, for support lookups only
+    status             token_status NOT NULL DEFAULT 'generated',
+    cta_header         varchar(40)  NOT NULL DEFAULT 'Kontaktieren Sie mich',
+    design_template_id varchar(40)  NOT NULL DEFAULT 'classic',
+    batch_id           uuid,                         -- admin batch generation
+    activated_at       timestamptz,
+    revoked_at         timestamptz,
+    revoke_reason      varchar(120),
+    created_at         timestamptz  NOT NULL DEFAULT now()
+);
+CREATE INDEX qr_tokens_vehicle_idx ON qr_tokens(vehicle_id);
+
+-- Secondary contact for escalation. Must CONFIRM via link before use (Art. 6/7 GDPR).
+CREATE TABLE emergency_contacts (
+    id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id             uuid          NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    vehicle_id          uuid          REFERENCES vehicles(id) ON DELETE CASCADE, -- NULL = all vehicles
+    display_name        varchar(60)   NOT NULL,
+    channel             channel_type  NOT NULL,
+    address_enc         bytea         NOT NULL,
+    address_bidx        bytea         NOT NULL,
+    key_version         smallint      NOT NULL DEFAULT 1,
+    escalation_order    smallint      NOT NULL DEFAULT 1,
+    consent             consent_state NOT NULL DEFAULT 'pending',
+    consent_token_hash  bytea         UNIQUE,
+    consent_requested_at timestamptz  NOT NULL DEFAULT now(),
+    consent_decided_at  timestamptz,
+    created_at          timestamptz   NOT NULL DEFAULT now()
+);
+CREATE INDEX emergency_contacts_user_idx ON emergency_contacts(user_id);
+
+-- Quiet hours / schedule. Urgent alerts bypass when urgent_override = true.
+CREATE TABLE notification_rules (
+    id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id         uuid     NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    vehicle_id      uuid     REFERENCES vehicles(id) ON DELETE CASCADE,
+    quiet_start     time     NOT NULL,              -- local time in users.timezone
+    quiet_end       time     NOT NULL,
+    days_mask       smallint NOT NULL DEFAULT 127,  -- bit0 = Monday … bit6 = Sunday
+    urgent_override boolean  NOT NULL DEFAULT true,
+    escalation_minutes smallint NOT NULL DEFAULT 7 CHECK (escalation_minutes BETWEEN 3 AND 30),
+    created_at      timestamptz NOT NULL DEFAULT now()
+);
+
+-- ---------------------------------------------------------------------------
+-- Alerts
+-- ---------------------------------------------------------------------------
+CREATE TABLE alert_types (
+    code                     varchar(32)    PRIMARY KEY,
+    severity                 alert_severity NOT NULL,
+    escalates                boolean        NOT NULL DEFAULT false,
+    label_de                 varchar(80)    NOT NULL,
+    label_en                 varchar(80)    NOT NULL,
+    sort_order               smallint       NOT NULL,
+    is_active                boolean        NOT NULL DEFAULT true
+);
+
+INSERT INTO alert_types (code, severity, escalates, label_de, label_en, sort_order) VALUES
+ ('blocking',     'urgent', true,  'Fahrzeug versperrt Ausfahrt',        'Vehicle is blocking a driveway', 1),
+ ('lights_on',    'normal', false, 'Licht brennt noch',                  'Lights are still on',            2),
+ ('window_open',  'normal', true,  'Fenster / Schiebedach offen',        'Window or sunroof open',         3),
+ ('damage',       'urgent', true,  'Beschädigung / Parkschaden entdeckt','Damage / parking collision',     4),
+ ('alarm',        'normal', false, 'Alarmanlage ausgelöst',              'Alarm is going off',             5),
+ ('towing_risk',  'urgent', true,  'Abschleppen droht',                  'Vehicle is about to be towed',   6),
+ ('custom',       'normal', false, 'Eigene Nachricht',                   'Custom message',                 7);
+
+CREATE TABLE alerts (
+    id                    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    qr_token_id           uuid             NOT NULL REFERENCES qr_tokens(id) ON DELETE CASCADE,
+    vehicle_id            uuid             NOT NULL REFERENCES vehicles(id) ON DELETE CASCADE,
+    alert_type            varchar(32)      NOT NULL REFERENCES alert_types(code),
+    severity              alert_severity   NOT NULL,
+    status                alert_status     NOT NULL DEFAULT 'created',
+    custom_message_enc    bytea,                     -- purged after 7 days
+    key_version           smallint         NOT NULL DEFAULT 1,
+    moderation            moderation_state NOT NULL DEFAULT 'not_required',
+    scanner_lang          ui_lang          NOT NULL DEFAULT 'de',
+    -- Pseudonymous scanner reference: HMAC(daily_salt, ip_prefix|ua|token).
+    -- Daily salt is destroyed after 24h -&gt; value becomes unlinkable. Column nulled after 24h.
+    scanner_ref           bytea,
+    status_view_hash      bytea            NOT NULL, -- secret the scanner's browser holds to poll status
+    ack_token_hash        bytea            UNIQUE,   -- single-use link in the owner notification
+    ack_token_expires_at  timestamptz,
+    escalate_at           timestamptz,               -- NULL = no escalation
+    dispatched_at         timestamptz,
+    acknowledged_at       timestamptz,
+    escalated_at          timestamptz,
+    expires_at            timestamptz      NOT NULL DEFAULT now() + interval '2 hours',
+    created_at            timestamptz      NOT NULL DEFAULT now()
+);
+CREATE INDEX alerts_vehicle_created_idx ON alerts(vehicle_id, created_at DESC);
+CREATE INDEX alerts_escalation_due_idx  ON alerts(escalate_at)
+    WHERE status IN ('dispatched', 'delivered') AND escalate_at IS NOT NULL;
+CREATE INDEX alerts_scanner_ref_idx     ON alerts(scanner_ref) WHERE scanner_ref IS NOT NULL;
+
+CREATE TABLE alert_deliveries (
+    id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    alert_id            uuid            NOT NULL REFERENCES alerts(id) ON DELETE CASCADE,
+    recipient           recipient_kind  NOT NULL,
+    emergency_contact_id uuid           REFERENCES emergency_contacts(id) ON DELETE SET NULL,
+    channel             channel_type    NOT NULL,
+    provider            varchar(30)     NOT NULL,   -- 'webpush','brevo','360dialog','twilio','seven'
+    provider_message_id varchar(128),
+    status              delivery_status NOT NULL DEFAULT 'queued',
+    attempt             smallint        NOT NULL DEFAULT 1,
+    error_code          varchar(64),
+    cost_micros_eur     integer,                     -- for unit-economics reporting
+    queued_at           timestamptz     NOT NULL DEFAULT now(),
+    sent_at             timestamptz,
+    delivered_at        timestamptz,
+    read_at             timestamptz
+);
+CREATE INDEX alert_deliveries_alert_idx ON alert_deliveries(alert_id);
+CREATE INDEX alert_deliveries_provider_msg_idx ON alert_deliveries(provider, provider_message_id);
+
+-- Two-way anonymous chat (Premium). Content purged 7 days after alert closes.
+CREATE TABLE alert_messages (
+    id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    alert_id    uuid             NOT NULL REFERENCES alerts(id) ON DELETE CASCADE,
+    sender      chat_sender      NOT NULL,
+    body_enc    bytea            NOT NULL,
+    key_version smallint         NOT NULL DEFAULT 1,
+    moderation  moderation_state NOT NULL DEFAULT 'passed',
+    created_at  timestamptz      NOT NULL DEFAULT now()
+);
+CREATE INDEX alert_messages_alert_idx ON alert_messages(alert_id, created_at);
+
+-- Owner reports a malicious scan -&gt; scanner_ref blocked for that token (and globally if repeated).
+CREATE TABLE abuse_reports (
+    id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    alert_id      uuid         NOT NULL REFERENCES alerts(id) ON DELETE CASCADE,
+    reported_by   uuid         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    reason        varchar(40)  NOT NULL,
+    note          varchar(500),
+    status        abuse_status NOT NULL DEFAULT 'open',
+    handled_by    uuid         REFERENCES users(id) ON DELETE SET NULL,
+    created_at    timestamptz  NOT NULL DEFAULT now(),
+    handled_at    timestamptz
+);
+
+CREATE TABLE scanner_blocks (
+    scanner_ref  bytea       NOT NULL,
+    qr_token_id  uuid        REFERENCES qr_tokens(id) ON DELETE CASCADE,  -- NULL = global
+    reason       varchar(40) NOT NULL,
+    expires_at   timestamptz NOT NULL,             -- max 30 days
+    created_at   timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX scanner_blocks_ref_idx ON scanner_blocks(scanner_ref, expires_at);
+
+-- ---------------------------------------------------------------------------
+-- Plans, subscriptions &amp; fair-use metering
+-- ---------------------------------------------------------------------------
+CREATE TABLE plans (
+    code                  plan_code    PRIMARY KEY,
+    name                  varchar(40)  NOT NULL,
+    price_year_gross_cents integer     NOT NULL,     -- incl. 19 % VAT (B2C) / net for business
+    price_month_gross_cents integer,
+    per_vehicle           boolean      NOT NULL DEFAULT false,
+    limits                jsonb        NOT NULL,     -- {"vehicles":2,"whatsapp_per_month":30,...}
+    is_public             boolean      NOT NULL DEFAULT true
+);
+
+INSERT INTO plans (code, name, price_year_gross_cents, price_month_gross_cents, per_vehicle, limits) VALUES
+ ('plus',     'ParkShield Plus',     2900, 299, false,
+   '{"vehicles":2,"emergency_contacts":1,"whatsapp_per_month":30,"sms_per_month":0,"voice_minutes_per_month":0,"chat":false,"parking_assistant":true,"decals_included_per_year":1}'),
+ ('premium',  'ParkShield Premium',  5900, 599, false,
+   '{"vehicles":5,"emergency_contacts":3,"whatsapp_per_month":100,"sms_per_month":15,"voice_minutes_per_month":20,"chat":true,"parking_assistant":true,"decals_included_per_year":3}'),
+ ('business', 'ParkShield Business', 3900, NULL, true,
+   '{"vehicles_min":5,"emergency_contacts":5,"whatsapp_per_vehicle_month":50,"sms_per_vehicle_month":10,"voice_minutes_per_vehicle_month":10,"chat":true,"api":true,"sso":false,"decals_included_per_year":1}');
+
+CREATE TABLE subscriptions (
+    id                     uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id                uuid               REFERENCES users(id) ON DELETE CASCADE,
+    organization_id        uuid               REFERENCES organizations(id) ON DELETE CASCADE,
+    plan                   plan_code          NOT NULL REFERENCES plans(code),
+    interval               billing_interval   NOT NULL DEFAULT 'year',
+    quantity               integer            NOT NULL DEFAULT 1,   -- vehicles for business
+    status                 subscription_state NOT NULL,
+    stripe_subscription_id varchar(64)        UNIQUE,
+    withdrawal_waiver_at   timestamptz,                -- consumer asked for immediate start (§356(4) BGB / §357a Wertersatz)
+    current_period_end     timestamptz,
+    cancel_at_period_end   boolean            NOT NULL DEFAULT false,
+    canceled_at            timestamptz,                -- §312k BGB "Kündigungsbutton" timestamp
+    created_at             timestamptz        NOT NULL DEFAULT now(),
+    updated_at             timestamptz        NOT NULL DEFAULT now(),
+    CONSTRAINT subscription_has_subject CHECK (user_id IS NOT NULL OR organization_id IS NOT NULL)
+);
+CREATE UNIQUE INDEX subscriptions_one_live_per_user ON subscriptions(user_id)
+    WHERE status IN ('active', 'past_due') AND user_id IS NOT NULL;
+CREATE UNIQUE INDEX subscriptions_one_live_per_org ON subscriptions(organization_id)
+    WHERE status IN ('active', 'past_due') AND organization_id IS NOT NULL;
+
+CREATE TABLE usage_counters (
+    subject_id  uuid        NOT NULL,              -- user or organization id
+    period      date        NOT NULL,              -- first day of month
+    metric      varchar(32) NOT NULL,              -- 'whatsapp','sms','voice_seconds','alerts_received'
+    value       integer     NOT NULL DEFAULT 0,
+    PRIMARY KEY (subject_id, period, metric)
+);
+
+-- ---------------------------------------------------------------------------
+-- Decal shop
+-- ---------------------------------------------------------------------------
+CREATE TABLE decal_orders (
+    id                    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id               uuid         REFERENCES users(id) ON DELETE SET NULL,
+    organization_id       uuid         REFERENCES organizations(id) ON DELETE SET NULL,
+    status                order_status NOT NULL DEFAULT 'pending_payment',
+    shipping_address_enc  bytea        NOT NULL,     -- purged 90 days after delivery
+    key_version           smallint     NOT NULL DEFAULT 1,
+    total_gross_cents     integer      NOT NULL,
+    included_in_plan      boolean      NOT NULL DEFAULT false,
+    stripe_payment_intent varchar(64)  UNIQUE,
+    print_partner_ref     varchar(64),
+    tracking_number       varchar(64),
+    created_at            timestamptz  NOT NULL DEFAULT now(),
+    shipped_at            timestamptz,
+    delivered_at          timestamptz
+);
+
+CREATE TABLE decal_order_items (
+    id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id     uuid          NOT NULL REFERENCES decal_orders(id) ON DELETE CASCADE,
+    qr_token_id  uuid          NOT NULL REFERENCES qr_tokens(id) ON DELETE RESTRICT,
+    product      decal_product NOT NULL,
+    quantity     smallint      NOT NULL DEFAULT 1 CHECK (quantity &gt; 0),
+    unit_gross_cents integer   NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- Parking assistant (Parkuhr) — location auto-deleted 24h after session end
+-- ---------------------------------------------------------------------------
+CREATE TABLE parking_sessions (
+    id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id          uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    vehicle_id       uuid        REFERENCES vehicles(id) ON DELETE SET NULL,
+    location_enc     bytea,                          -- {"lat":..,"lng":..,"acc":..}
+    key_version      smallint    NOT NULL DEFAULT 1,
+    meter_expires_at timestamptz,
+    reminders_min    smallint[]  NOT NULL DEFAULT '{10,5}',
+    note             varchar(120),
+    ended_at         timestamptz,
+    created_at       timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX parking_sessions_due_idx ON parking_sessions(meter_expires_at) WHERE ended_at IS NULL;
+
+-- ---------------------------------------------------------------------------
+-- GDPR: consents, data-subject requests, audit
+-- ---------------------------------------------------------------------------
+CREATE TABLE consents (
+    id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id       uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    purpose       varchar(40) NOT NULL,  -- 'terms','privacy','whatsapp_optin','sms_optin','marketing_email'
+    doc_version   varchar(20) NOT NULL,
+    granted_at    timestamptz NOT NULL DEFAULT now(),
+    withdrawn_at  timestamptz
+);
+CREATE INDEX consents_user_idx ON consents(user_id, purpose);
+
+CREATE TABLE data_subject_requests (
+    id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id       uuid        REFERENCES users(id) ON DELETE SET NULL,
+    email_bidx    bytea,                       -- survives erasure to prove completion
+    type          dsr_type    NOT NULL,
+    status        dsr_status  NOT NULL DEFAULT 'received',
+    due_at        timestamptz NOT NULL DEFAULT now() + interval '30 days',  -- Art. 12(3)
+    completed_at  timestamptz,
+    handled_by    uuid        REFERENCES users(id) ON DELETE SET NULL,
+    created_at    timestamptz NOT NULL DEFAULT now()
+);
+
+-- Append-only audit trail for staff actions &amp; security events. Retained 12 months.
+CREATE TABLE audit_logs (
+    id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    actor_id    uuid,
+    actor_role  user_role,
+    action      varchar(64) NOT NULL,          -- 'token.revoke','user.erase','ticket.assign',...
+    entity      varchar(40) NOT NULL,
+    entity_id   uuid,
+    meta        jsonb       NOT NULL DEFAULT '{}'::jsonb,
+    created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX audit_logs_entity_idx ON audit_logs(entity, entity_id);
+CREATE INDEX audit_logs_created_idx ON audit_logs(created_at);
+
+-- ---------------------------------------------------------------------------
+-- Support
+-- ---------------------------------------------------------------------------
+CREATE TABLE support_tickets (
+    id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id           uuid           REFERENCES users(id) ON DELETE SET NULL,
+    channel           ticket_channel NOT NULL,
+    subject           varchar(160)   NOT NULL,
+    status            ticket_status  NOT NULL DEFAULT 'open',
+    priority          smallint       NOT NULL DEFAULT 3 CHECK (priority BETWEEN 1 AND 4),
+    assigned_agent_id uuid           REFERENCES users(id) ON DELETE SET NULL,
+    first_response_at timestamptz,
+    resolved_at       timestamptz,
+    created_at        timestamptz    NOT NULL DEFAULT now(),
+    updated_at        timestamptz    NOT NULL DEFAULT now()
+);
+CREATE INDEX support_tickets_queue_idx ON support_tickets(status, priority, created_at);
+
+CREATE TABLE ticket_messages (
+    id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    ticket_id   uuid        NOT NULL REFERENCES support_tickets(id) ON DELETE CASCADE,
+    author_id   uuid        REFERENCES users(id) ON DELETE SET NULL,
+    is_internal boolean     NOT NULL DEFAULT false,
+    body        text        NOT NULL,
+    created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+-- ---------------------------------------------------------------------------
+-- Transactional outbox (exactly-once hand-off DB -&gt; queue)
+-- ---------------------------------------------------------------------------
+CREATE TABLE outbox_events (
+    id            bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    topic         varchar(64) NOT NULL,          -- 'alert.created','alert.escalate', ...
+    payload       jsonb       NOT NULL,
+    available_at  timestamptz NOT NULL DEFAULT now(),
+    processed_at  timestamptz,
+    attempts      smallint    NOT NULL DEFAULT 0
+);
+CREATE INDEX outbox_pending_idx ON outbox_events(available_at) WHERE processed_at IS NULL;
+
+-- ---------------------------------------------------------------------------
+-- updated_at trigger
+-- ---------------------------------------------------------------------------
+CREATE FUNCTION touch_updated_at() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN NEW.updated_at := now(); RETURN NEW; END $$;
+
+CREATE TRIGGER users_touch         BEFORE UPDATE ON users          FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
+CREATE TRIGGER organizations_touch BEFORE UPDATE ON organizations  FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
+CREATE TRIGGER vehicles_touch      BEFORE UPDATE ON vehicles       FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
+CREATE TRIGGER subscriptions_touch BEFORE UPDATE ON subscriptions  FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
+CREATE TRIGGER tickets_touch       BEFORE UPDATE ON support_tickets FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
+
+-- ---------------------------------------------------------------------------
+-- Retention job (run hourly by the worker; idempotent)
+-- ---------------------------------------------------------------------------
+CREATE FUNCTION run_retention() RETURNS void LANGUAGE plpgsql AS $$
+BEGIN
+    -- pseudonymous scanner reference: 24 h
+    UPDATE alerts SET scanner_ref = NULL
+     WHERE scanner_ref IS NOT NULL AND created_at &lt; now() - interval '24 hours';
+    -- free-text content: 7 days
+    UPDATE alerts SET custom_message_enc = NULL
+     WHERE custom_message_enc IS NOT NULL AND created_at &lt; now() - interval '7 days';
+    DELETE FROM alert_messages WHERE created_at &lt; now() - interval '7 days';
+    -- expire open alerts
+    UPDATE alerts SET status = 'expired'
+     WHERE status IN ('created','dispatched','delivered') AND expires_at &lt; now();
+    -- alert history visible to owner: 90 days
+    DELETE FROM alerts WHERE created_at &lt; now() - interval '90 days';
+    -- parking location: 24 h after session end
+    UPDATE parking_sessions SET location_enc = NULL
+     WHERE location_enc IS NOT NULL AND ended_at &lt; now() - interval '24 hours';
+    -- shipping addresses: 90 days after delivery (HGB/AO invoice copies live in accounting, not here)
+    UPDATE decal_orders SET shipping_address_enc = '\x'::bytea
+     WHERE delivered_at &lt; now() - interval '90 days' AND octet_length(shipping_address_enc) &gt; 0;
+    -- expired auth artefacts
+    DELETE FROM magic_link_tokens WHERE expires_at &lt; now() - interval '1 day';
+    DELETE FROM sessions WHERE expires_at &lt; now() - interval '7 days';
+    DELETE FROM scanner_blocks WHERE expires_at &lt; now();
+    -- declined / unanswered emergency-contact invitations: 14 days
+    DELETE FROM emergency_contacts
+     WHERE consent IN ('pending','declined') AND consent_requested_at &lt; now() - interval '14 days';
+    -- audit trail: 12 months
+    DELETE FROM audit_logs WHERE created_at &lt; now() - interval '12 months';
+    DELETE FROM outbox_events WHERE processed_at &lt; now() - interval '7 days';
+    -- execute due erasures
+    DELETE FROM users WHERE status = 'pending_deletion' AND deletion_due_at &lt; now();
+END $$;
+
+-- migrate:down
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+</pre>
+
+  <h3>الملحق ب: نقاط API الأساسية (MVP)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>الطريقة والمسار</th><th>الوصف</th><th>الحماية</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">GET /v1/scan/:code</td><td>بيانات صفحة الماسح (CTA، الاسم الوصفي، الأنواع)</td><td>حد 404 لكل IP</td></tr>
+      <tr><td class="mono">POST /v1/scan/:code/alerts</td><td>إنشاء تنبيه</td><td>Captcha، و3 حدود معدل، وفلتر</td></tr>
+      <tr><td class="mono">GET /v1/alerts/:id/status</td><td>حالة التنبيه للماسح</td><td>ترويسة X-Status-Token</td></tr>
+      <tr><td class="mono">POST /v1/ack/:token</td><td>"Ich komme"</td><td>رمز لمرة واحدة، صالح ساعتين</td></tr>
+      <tr><td class="mono">POST /v1/auth/magic-link</td><td>طلب رابط الدخول</td><td>Captcha، و5 طلبات في الساعة لكل بريد</td></tr>
+      <tr><td class="mono">POST /v1/auth/passkey/*</td><td>تسجيل Passkey والدخول به</td><td>WebAuthn</td></tr>
+      <tr><td class="mono">GET/POST/PATCH /v1/vehicles</td><td>إدارة السيارات</td><td>جلسة المالك</td></tr>
+      <tr><td class="mono">POST /v1/vehicles/:id/tokens</td><td>إصدار رمز جديد أو إلغاء رمز</td><td>جلسة المالك، وتأكيد إضافي</td></tr>
+      <tr><td class="mono">GET/POST /v1/channels</td><td>إدارة القنوات وOTP</td><td>جلسة المالك</td></tr>
+      <tr><td class="mono">POST /v1/push-subscriptions</td><td>تسجيل جهاز لـ Push</td><td>جلسة المالك</td></tr>
+      <tr><td class="mono">GET/POST /v1/emergency-contacts</td><td>دعوة جهة اتصال احتياطية</td><td>جلسة المالك</td></tr>
+      <tr><td class="mono">POST /v1/emergency-contacts/consent/:token</td><td>موافقة الجهة أو رفضها</td><td>رمز لمرة واحدة</td></tr>
+      <tr><td class="mono">POST /v1/billing/checkout</td><td>بدء الدفع عبر Stripe Checkout</td><td>جلسة المالك</td></tr>
+      <tr><td class="mono">POST /v1/billing/cancel</td><td>زر الإلغاء (§312k BGB)</td><td>جلسة، أو البريد مع رقم العقد</td></tr>
+      <tr><td class="mono">POST /v1/webhooks/stripe</td><td>أحداث الدفع</td><td>توقيع Stripe</td></tr>
+      <tr><td class="mono">POST /v1/webhooks/whatsapp</td><td>حالة الرسائل وأزرار الرد</td><td>توقيع BSP</td></tr>
+      <tr><td class="mono">POST /v1/me/export · DELETE /v1/me</td><td>تصدير البيانات وحذف الحساب</td><td>جلسة حديثة (إعادة تحقق)</td></tr>
+      <tr><td class="mono">/v1/admin/*</td><td>لوحة الإدارة</td><td>RBAC، وPasskey، وIP allowlist، وسجل تدقيق</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>الملحق ج: مصطلحات ألمانية</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المصطلح</th><th>المعنى</th></tr></thead>
+    <tbody>
+      <tr><td>Zugeparkt / Ausfahrt versperrt</td><td>السيارة مسدودة، أو المخرج مسدود</td></tr>
+      <tr><td>Parkscheibe</td><td>قرص وقت الركن الأزرق</td></tr>
+      <tr><td>Anwohnerparken</td><td>موقف مخصص لسكان الحي بتصريح</td></tr>
+      <tr><td>Halteverbot / Abschleppen</td><td>ممنوع الوقوف / سحب السيارة</td></tr>
+      <tr><td>Ordnungsamt</td><td>مكتب النظام العام في البلدية (المخالفات والسحب)</td></tr>
+      <tr><td>Impressum</td><td>صفحة بيانات مقدم الخدمة الإلزامية</td></tr>
+      <tr><td>AGB</td><td>الشروط والأحكام العامة</td></tr>
+      <tr><td>Widerrufsrecht</td><td>حق التراجع عن العقد (14 يومًا)</td></tr>
+      <tr><td>Kündigungsbutton</td><td>زر إلغاء العقد الإلزامي</td></tr>
+      <tr><td>AVV (Auftragsverarbeitungsvertrag)</td><td>عقد معالجة البيانات مع مزود</td></tr>
+      <tr><td>DSB (Datenschutzbeauftragter)</td><td>مسؤول حماية البيانات</td></tr>
+      <tr><td>VVT / TOMs</td><td>سجل أنشطة المعالجة / التدابير التقنية والتنظيمية</td></tr>
+      <tr><td>Steuerberater</td><td>المستشار الضريبي (المحاسب)</td></tr>
+      <tr><td>Hausverwaltung</td><td>شركة إدارة العقارات السكنية</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<footer class="foot">
+  <p>ParkShield™ — SRS-PARK-DE-2026-V2 · نوفمبر 2026. الأسعار والتكاليف تقديرية ويجب تأكيدها بعروض أسعار في المرحلة 0. البنود القانونية خطة عمل تُراجَع مع محامٍ ومسؤول حماية بيانات.</p>
+</footer>
+</main>
+</div>
